@@ -186,6 +186,8 @@ var share = (function(){
 										type = 'images';
 										value = value
 									}
+									console.log(value);
+									
 
 									if(!_.isArray(value)) value = [value]
 
@@ -1250,6 +1252,7 @@ var share = (function(){
 						}
 					}
 
+
 					else{
 						if(og){
 
@@ -1743,6 +1746,8 @@ var share = (function(){
 						currentShare.repost.set(parameters().repost)
 
 					console.log('currentShare', currentShare)
+					console.log('itsme');
+					
 
 					var data = {
 						essenseData : essenseData,
