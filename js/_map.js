@@ -10,7 +10,8 @@ __map =  {
         "js/vendor/timer.js",
         "js/vendor/ion.sound/ion.sound.min.js" ,
         "js/vendor/aesjs.js",
-        "js/vendor/btc/src/btc.js",
+		"js/vendor/btc/src/btc.js",
+		"js/vendor/webtorrent/webtorrent.js",
         "js/vendor/pbkdf2.js",
         "js/vendor/sha1.js",
         "js/vendor/jdenticon.js",
@@ -726,8 +727,8 @@ __map =  {
 
 			},
 			relations : [
-				{src : 'js/vendor/jquery.inputmask.bundle.min.js',			   f : 'js'},					
-		
+				{src : 'js/vendor/jquery.inputmask.bundle.min.js',			   f : 'js'},
+				{src : 'js/vendor/webtorrent.min.js',			   f : 'js'},										
 			],
 
 			

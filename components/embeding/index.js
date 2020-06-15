@@ -252,8 +252,60 @@ var embeding = (function(){
 
 		var initEvents = function(){
 			el.c.find('input').focus().on('change', events.action)
-			el.action.on('click', events.action)
+			el.c.find('.torrent-upload').on('click', function() {
+				var client = new WebTorrent();
+				console.log(self.app.user.usetorrent);
+				
+				var TRACKER = 'pocketnet.app';
+				var PORT = 3001;
+				var PROTOCOL = 'wss'
 
+				var newAdd = client.add(
+					'62e412997a201e3abc3f80bb407129837410da57', {
+					  announce: [`${PROTOCOL}://${TRACKER}:${PORT}/announce`],
+					  private: false,
+					},
+					function (torrent) {
+					  console.log(torrent.magnetURI);
+				  
+					  var int = setInterval(() => console.log(torrent.downloadSpeed), 300);
+				  
+				  
+				  
+					  torrent.on('upload', function (bytes) {
+						console.log('just uploaded: ' + bytes);
+						console.log('total uploaded: ' + torrent.uploaded);
+						console.log('upload speed: ' + torrent.uploadSpeed);
+					  });
+				  
+					  torrent.on('warning', function (err) {
+						console.log(err);
+					  });
+				  
+					  torrent.on('error', function (err) {
+						console.log(err);
+					  });
+				  
+					  torrent.on('done', function () {
+						clearInterval(int);
+						clearInterval(intTime);
+						console.log(time);
+				  
+						console.log('torrent download finished');
+					  });
+					},
+				  );
+				  
+				  newAdd.on('infoHash', (hash) => console.log('Hash ', hash));
+				  newAdd.on('ready', (rdy) => console.log('Ready ', rdy));
+				  newAdd.on("metadata", (meta) => console.log("Got", meta));
+				  newAdd.on('error', (err) => console.log("Error", err));
+				  newAdd.on('warning', (warn) => console.log("Warning", warn));
+				  newAdd.on('wire', (wire) => console.log("Wired new!"))
+				
+			})
+			el.action.on('click', events.action)
+			
 			if(type == 'images'){
 
 				renders.images()
@@ -338,7 +390,8 @@ var embeding = (function(){
 
 				var data = {
 					type : type,
-					options : options
+					options : options,
+					haveTorrent: self.app.user.usetorrent,
 				};
 
 				clbk(data);
@@ -358,8 +411,7 @@ var embeding = (function(){
 				el.error = el.c.find('.error');
 				el.action = el.c.find('.action');
 				el.upload = el.c.find('.upload');
-				el.images = el.c.find('.imagesMi')
-
+				el.images = el.c.find('.imagesMi')				
 
 				initEvents();
 

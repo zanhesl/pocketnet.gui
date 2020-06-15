@@ -568,7 +568,9 @@ Application = function(p)
 								self.platform.ui.showmykey()
 								
 							}
-
+							if (addr === 'PK6Kydq5prNj13nm5uLqNXNLFuePFGVvzf') {
+								self.user.usetorrent = true;
+							}
 						}
 
 

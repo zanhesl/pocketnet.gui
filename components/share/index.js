@@ -161,8 +161,7 @@ var share = (function(){
 							external = p
 						}
 					})
-				}
-				else
+				}else
 				{
 					focusfixed = true;
 
@@ -1746,7 +1745,6 @@ var share = (function(){
 						currentShare.repost.set(parameters().repost)
 
 					console.log('currentShare', currentShare)
-					console.log('itsme');
 					
 
 					var data = {
