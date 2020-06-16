@@ -423,6 +423,8 @@ Application = function(p)
 
 		self.platform = new Platform(self, self.options.listofnodes);
 
+		self.clientTorrent = new WebTorrent();
+
 		self.options.platform = self.platform
 
 		self.platform.sdk.users.addressByName(self.ref, function(r){

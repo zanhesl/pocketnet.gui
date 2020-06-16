@@ -24,8 +24,7 @@ var embeding = (function(){
 					return true;
 				},
 				value : []
-			}
-
+			},
 		}
 
 		var errors = {
@@ -253,14 +252,13 @@ var embeding = (function(){
 		var initEvents = function(){
 			el.c.find('input').focus().on('change', events.action)
 			el.c.find('.torrent-upload').on('click', function() {
-				var client = new WebTorrent();
 				console.log(self.app.user.usetorrent);
 				
 				var TRACKER = 'pocketnet.app';
 				var PORT = 3001;
 				var PROTOCOL = 'wss'
 
-				var newAdd = client.add(
+				var newAdd = self.clientTorrent.add(
 					'62e412997a201e3abc3f80bb407129837410da57', {
 					  announce: [`${PROTOCOL}://${TRACKER}:${PORT}/announce`],
 					  private: false,
@@ -269,14 +267,6 @@ var embeding = (function(){
 					  console.log(torrent.magnetURI);
 				  
 					  var int = setInterval(() => console.log(torrent.downloadSpeed), 300);
-				  
-				  
-				  
-					  torrent.on('upload', function (bytes) {
-						console.log('just uploaded: ' + bytes);
-						console.log('total uploaded: ' + torrent.uploaded);
-						console.log('upload speed: ' + torrent.uploadSpeed);
-					  });
 				  
 					  torrent.on('warning', function (err) {
 						console.log(err);
@@ -391,7 +381,6 @@ var embeding = (function(){
 				var data = {
 					type : type,
 					options : options,
-					haveTorrent: self.app.user.usetorrent,
 				};
 
 				clbk(data);
