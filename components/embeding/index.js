@@ -252,8 +252,6 @@ var embeding = (function(){
 		var initEvents = function(){
 			el.c.find('input').focus().on('change', events.action)
 			el.c.find('.torrent-upload').on('click', function() {
-				console.log(self.app.user.usetorrent);
-				
 				var TRACKER = 'pocketnet.app';
 				var PORT = 3001;
 				var PROTOCOL = 'wss'
