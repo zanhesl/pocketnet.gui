@@ -77,6 +77,9 @@ var embeding = (function(){
 								images.push(v.base64)
 						})
 
+						console.log(images);
+						
+
 						on.added(images)
 						
 						self.closeContainer()
@@ -101,11 +104,10 @@ var embeding = (function(){
 			
 			},
 			slowUpload : function(file, clbk){
+				//was 1080 1080
 				resize(file.base64, 1080, 1080, function(resized){
 
 					var r = resized.split(',');
-
-					console.log(file)
 
 					if (r[1]){
 
@@ -116,12 +118,10 @@ var embeding = (function(){
 
 						options.images.value.push(file)
 
-
+						if (clbk)
+							clbk()
 					}
-
-					if (clbk)
-						clbk()
-				})
+				});
 			},
 
 			upload : function(file, clbk){
@@ -251,47 +251,7 @@ var embeding = (function(){
 
 		var initEvents = function(){
 			el.c.find('input').focus().on('change', events.action)
-			el.c.find('.torrent-upload').on('click', function() {
-				var TRACKER = 'pocketnet.app';
-				var PORT = 3001;
-				var PROTOCOL = 'wss'
-
-				var newAdd = self.clientTorrent.add(
-					'62e412997a201e3abc3f80bb407129837410da57', {
-					  announce: [`${PROTOCOL}://${TRACKER}:${PORT}/announce`],
-					  private: false,
-					},
-					function (torrent) {
-					  console.log(torrent.magnetURI);
-				  
-					  var int = setInterval(() => console.log(torrent.downloadSpeed), 300);
-				  
-					  torrent.on('warning', function (err) {
-						console.log(err);
-					  });
-				  
-					  torrent.on('error', function (err) {
-						console.log(err);
-					  });
-				  
-					  torrent.on('done', function () {
-						clearInterval(int);
-						clearInterval(intTime);
-						console.log(time);
-				  
-						console.log('torrent download finished');
-					  });
-					},
-				  );
-				  
-				  newAdd.on('infoHash', (hash) => console.log('Hash ', hash));
-				  newAdd.on('ready', (rdy) => console.log('Ready ', rdy));
-				  newAdd.on("metadata", (meta) => console.log("Got", meta));
-				  newAdd.on('error', (err) => console.log("Error", err));
-				  newAdd.on('warning', (warn) => console.log("Warning", warn));
-				  newAdd.on('wire', (wire) => console.log("Wired new!"))
-				
-			})
+			
 			el.action.on('click', events.action)
 			
 			if(type == 'images'){

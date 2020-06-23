@@ -423,7 +423,14 @@ Application = function(p)
 
 		self.platform = new Platform(self, self.options.listofnodes);
 
-		self.clientTorrent = new WebTorrent();
+
+		//тут объект 
+		self.client = new WebTorrent();
+
+		// setTimeout(function(){
+		// 	console.log('AAAAAAAAA');
+			
+		// }, 5000);
 
 		self.options.platform = self.platform
 

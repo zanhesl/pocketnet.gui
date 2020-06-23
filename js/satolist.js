@@ -7597,7 +7597,7 @@ Platform = function(app, listofnodes){
 
 				var verify = keyPair.verify(
 					bitcoin.crypto.hash256(comment.serialize()), 
-					Buffer.from(signature.toString('hex'), 'hex')
+					Buffer.from(signature.toString('hex'), 'hex') //это то что в метадату 7592
 				);
 
 
