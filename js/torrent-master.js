@@ -7,7 +7,7 @@ TorrentHandler = function(app) {
 
     self.seed = function(file, clbk) {
         app.client.seed(
-            [Buffer.from(file)], {
+            Buffer.from(file, 'base64'), {
                 private: false,
                 announce: self.trackers,
                 info: {
@@ -55,15 +55,38 @@ TorrentHandler = function(app) {
             });
 
             torrent.on('done', function () {
-                console.log('torrent download finished');
-                console.log(torrent.files);
-                // keypair from public key...
-                console.log(app.user.keys().verify(
-                    bitcoin.crypto.hash256(torrent.files[0].toString('base64')),
-                    Buffer.from(torrent.info.encryptedSignature.toString(), 'hex') //это то что в метадату 7592
-                ));
+                console.log('torrent download finished', torrent.files);
+                torrent.files[0].getBuffer(function callback(err, buffer) {
+                    console.log(buffer.toString('base64'));
 
-                if (clbk) clbk();
+                    console.log('signing!!!!', app.user.keys().verify(
+                        bitcoin.crypto.hash256(buffer.toString('base64')),
+                        Buffer.from(torrent.info.encryptedSignature.toString(), 'hex') //это то что в метадату 7592
+                    ));
+
+                    if (clbk) clbk('data:image/png;base64, ' +
+                        buffer.toString('base64').toString());
+                })
+                // var stream = torrent.files[0].createReadStream();
+                // stream.on('readable', () => {
+                //     var chunk;
+                //     while (null !== (chunk = stream.read())) {
+                //         console.log('chunk',chunk);
+                //     }
+                // });
+                // var reader = new FileReader();
+                // torrent.files[0].getBlob(function (blob) {
+                //     reader.readAsArrayBuffer(blob);
+                // });
+                // reader.onload = function () {
+                //     console.log('fiiiile', reader.result);
+                // };
+                // console.log('sign', torrent.info.encryptedSignature.toString());
+                
+                // keypair from public key...
+                
+
+                
             });
 
 
