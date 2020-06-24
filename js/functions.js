@@ -1346,6 +1346,15 @@
 
 			if (_el.attr('image'))
 			{
+				if (_el.attr('image').indexOf('http') === -1) {
+					var TRACKER = 'pocketnet.app';
+					var PORT = 3001;
+					var PROTOCOL = 'wss'
+
+					console.log('TOOORENT', _el.attr('image'));
+					self.app.torrentHandler.add(_el.attr('image'));
+					
+				}
 				_el.css('background-image', 'url('+$(this).attr('image')+')');
 				_el.css('background-size', p.size || 'cover');
 				_el.css('background-position', p.position || 'center center');

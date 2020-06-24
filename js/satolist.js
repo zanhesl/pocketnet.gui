@@ -7581,7 +7581,7 @@ Platform = function(app, listofnodes){
 
 				
 				var signature = keyPair.sign(Buffer.from(bitcoin.crypto.hash256(comment.serialize()), 'utf8'));	
-
+				
 				var id = editid || makeid();
 
 				var parameters = [
@@ -7589,7 +7589,7 @@ Platform = function(app, listofnodes){
 					txid, 
 					self.app.platform.sdk.address.pnet().address, 
 					keyPair.publicKey.toString('hex'), 
-					signature.toString('hex'), 
+					signature.toString('hex'), //вот это
 					JSON.stringify(comment.export()), 
 					pid || '', 
 					aid || ''

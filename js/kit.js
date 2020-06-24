@@ -1018,37 +1018,10 @@ Share = function(){
 				if (r[1]){
 						if (app.user.usetorrent) {
 							console.log('AAAAAA', app.platform.api.keypair) 
-							var TRACKER = 'pocketnet.app';
-							var PORT = 3001;
-							var PROTOCOL = 'wss'
-							//записать метадату
-							app.client.seed(
-								new File([r[1]], 'test-name.txt', {type: "text/plain"}), {
-									private: false,
-									announce: [`${PROTOCOL}://${TRACKER}:${PORT}/announce`],
-									info: {
-										encryptedSignature: 'test sign',
-									}
-								},
-								torrent => {
-									console.log('started', torrent.magnetURI, torrent.infoHash, torrent.comment);
-									console.log(self.images);
-									
-									var rationInt = setInterval(function() {
-										console.log(torrent.ratio);
-										
-										if (torrent.ratio >= 1) {
-
-											// self.images.v[index] = torrent.infoHash;
-											// p.success();
-											clearTimeout(rationInt);
-										}
-									}, 500);
-									torrent.on('error', function (err) {
-										console.log(err);
-									});
-								},
-							);
+							app.torrentHandler.seed(r[1], function (infoHash) {
+								self.images.v[index] = infoHash;
+								p.success();
+							});
 
 						} else {
 							app.ajax.run({
@@ -1674,10 +1647,16 @@ pShare = function(){
 		}
 
 		if(v.myVal) self.myVal = Number(v.myVal)
-		console.log('IIIIIMG', v.i, v.images);
 		
 		self.images = v.i || v.images || [];//client.add(infohash, (torrent) => {torrent.on('done', () => ...)})
 		self.repost = v.r || v.repost || v.txidRepost || ''
+
+		// if (self.images.length) {
+		// 	if (self.images[0].indexOf('http') === -1){
+		// 		console.log('IIIIIMG', app.user.keys());
+		// 	}
+		// }
+
 		//downloadImage принимает images, проверяет, b64 или torrent
 		//getImage принимает значение images возвращает b64 или ссылка
 		if (v.txid)

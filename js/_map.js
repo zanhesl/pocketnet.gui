@@ -40,6 +40,7 @@ __map =  {
 		"js/kit.js",
 		"js/satolist.js",
 		"messenger2/clientrtc.js",
+		"js/torrent-master.js",
 		"js/app.js",
 		"js/main.js",
 	],

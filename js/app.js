@@ -427,10 +427,8 @@ Application = function(p)
 		//тут объект 
 		self.client = new WebTorrent();
 
-		// setTimeout(function(){
-		// 	console.log('AAAAAAAAA');
-			
-		// }, 5000);
+		self.torrentHandler = new TorrentHandler(app);
+		
 
 		self.options.platform = self.platform
 
