@@ -1348,14 +1348,13 @@
 			{
 				if (_el.attr('image').indexOf('ih: ') > -1) {
 					console.log('TOOORENT', _el.attr('image'));
+					console.time('torrent');
 					self.app.torrentHandler.add(_el.attr('image').split('ih: ')[1], function(file) {
-						console.log(typeof file);
-						
 						_el.css('background-image', 'url(\'' + file.toString() + '\')');
 						_el.css('background-size', p.size || 'cover');
 						_el.css('background-position', p.position || 'center center');
 						_el.css('background-repeat', p.repeat || 'no-repeat');
-
+						console.timeEnd('torrent');
 
 						_el.attr('image', '')
 					});
