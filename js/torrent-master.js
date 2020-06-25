@@ -5,23 +5,22 @@ TorrentHandler = function(app) {
         'wss://pocketnet.app:3001/announce'
     ]
 
+    //cash со статусами
+
     self.seed = function(file, clbk) {
+        var keyPair = app.user.keys();
         app.client.seed(
             Buffer.from(file, 'base64'), {
                 private: false,
                 announce: self.trackers,
                 info: {
-                    encryptedSignature: app.user.keys().sign(Buffer.from(bitcoin.crypto.hash256(file), 'utf8')).toString('hex'),
-                    // publickKey: //....
+                    encryptedSignature: keyPair.sign(Buffer.from(bitcoin.crypto.hash256(file), 'utf8')).toString('hex'),
+                    address: app.platform.sdk.address.pnet().address,
+                    publicKey: keyPair.publicKey.toString('hex'),
                 }
             },
             torrent => {
                 console.log('started', torrent.magnetURI, torrent.infoHash);
-                console.log('true', app.user.keys().sign(Buffer.from(bitcoin.crypto.hash256(file), 'utf8')).toString('hex'));
-                console.log('string', torrent.info.encryptedSignature.toString());
-                console.log('string', torrent.info.encryptedSignature.toString('hex'));
-                
-
 
                 var rationInt = setInterval(function () {
                     console.log(torrent.ratio);
@@ -55,38 +54,26 @@ TorrentHandler = function(app) {
             });
 
             torrent.on('done', function () {
-                console.log('torrent download finished', torrent.files);
                 torrent.files[0].getBuffer(function callback(err, buffer) {
-                    console.log(buffer.toString('base64'));
 
-                    console.log('signing!!!!', app.user.keys().verify(
+                    var keyPair = bitcoin.ECPair.fromPublicKey(Buffer.from(torrent.info.publicKey.toString(), 'hex'))
+                    console.log('keyPair', keyPair);
+                    
+                    if (keyPair.verify(
                         bitcoin.crypto.hash256(buffer.toString('base64')),
                         Buffer.from(torrent.info.encryptedSignature.toString(), 'hex') //это то что в метадату 7592
-                    ));
+                    )) {
+                        console.log('Verified!');
+                        
+                        if (clbk) clbk('data:image/png;base64,' +
+                            buffer.toString('base64').toString());
+                    } else {
+                        console.log('Failed!');
+                        if (clbk) clbk('data:image/png;base64,');
+                    }
 
-                    if (clbk) clbk('data:image/png;base64, ' +
-                        buffer.toString('base64').toString());
-                })
-                // var stream = torrent.files[0].createReadStream();
-                // stream.on('readable', () => {
-                //     var chunk;
-                //     while (null !== (chunk = stream.read())) {
-                //         console.log('chunk',chunk);
-                //     }
-                // });
-                // var reader = new FileReader();
-                // torrent.files[0].getBlob(function (blob) {
-                //     reader.readAsArrayBuffer(blob);
-                // });
-                // reader.onload = function () {
-                //     console.log('fiiiile', reader.result);
-                // };
-                // console.log('sign', torrent.info.encryptedSignature.toString());
-                
-                // keypair from public key...
-                
-
-                
+                    
+                });                
             });
 
 

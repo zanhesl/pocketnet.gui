@@ -1019,7 +1019,7 @@ Share = function(){
 						if (app.user.usetorrent) {
 							console.log('AAAAAA', app.platform.api.keypair) 
 							app.torrentHandler.seed(r[1], function (infoHash) {
-								self.images.v[index] = infoHash;
+								self.images.v[index] = 'ih: ' + infoHash;//записать ih: infohash
 								p.success();
 							});
 

@@ -1346,11 +1346,12 @@
 
 			if (_el.attr('image'))
 			{
-				if (_el.attr('image').indexOf('http') === -1) {
+				if (_el.attr('image').indexOf('ih: ') > -1) {
 					console.log('TOOORENT', _el.attr('image'));
-					self.app.torrentHandler.add(_el.attr('image'), function(file) {
+					self.app.torrentHandler.add(_el.attr('image').split('ih: ')[1], function(file) {
+						console.log(typeof file);
 						
-						_el.css('background-image', 'url(' + file + ')');
+						_el.css('background-image', 'url(\'' + file.toString() + '\')');
 						_el.css('background-size', p.size || 'cover');
 						_el.css('background-position', p.position || 'center center');
 						_el.css('background-repeat', p.repeat || 'no-repeat');
