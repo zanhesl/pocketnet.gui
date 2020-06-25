@@ -1344,21 +1344,38 @@
 
 			var _el = $(this);
 
+			var renderImage = function (str) {
+				_el.css('background-image', 'url(' + str + ')');
+				_el.css('background-size', p.size || 'cover');
+				_el.css('background-position', p.position || 'center center');
+				_el.css('background-repeat', p.repeat || 'no-repeat');
+
+				_el.attr('image', '')
+			}
+
 			if (_el.attr('image'))
 			{
 				if (_el.attr('image').indexOf('ih: ') > -1) {
-					console.log('TOOORENT', _el.attr('image'));
-					console.time('torrent');
-					self.app.torrentHandler.add(_el.attr('image').split('ih: ')[1], function(file) {
-						_el.css('background-image', 'url(\'' + file.toString() + '\')');
-						_el.css('background-size', p.size || 'cover');
-						_el.css('background-position', p.position || 'center center');
-						_el.css('background-repeat', p.repeat || 'no-repeat');
-						console.timeEnd('torrent');
+					console.log('torrent', _el.attr('image'));
+					var infoHash = _el.attr('image').split('ih: ')[1];
+					var downloadedTorrent = self.app.client.get(infoHash);
 
-						_el.attr('image', '')
-					});
-					
+					if (downloadedTorrent) {
+						console.log('duped!');
+						
+						if (downloadedTorrent.done) {
+							downloadedTorrent.files[0].getBuffer(function callback(err, buffer) {
+									renderImage(('data:image/png;base64,' + buffer.toString('base64').toString()));
+								});
+						}
+					} else {
+						console.time('torrent' + infoHash);
+						self.app.torrentHandler.add(infoHash, function (file) {
+							renderImage(file.toString());
+							self.app.torrentHandler.store[infoHash] = file;
+							console.timeEnd('torrent' + infoHash);
+						});
+					}
 				} else {
 				_el.css('background-image', 'url('+$(this).attr('image')+')');
 				_el.css('background-size', p.size || 'cover');
@@ -1375,7 +1392,6 @@
 				_el.imagesLoaded({ background: true }, function(image) {
 
 				  	el.fadeIn(100);
-
 				  	if(typeof p.clbk === 'function')
 				  		p.clbk(image);
 				});

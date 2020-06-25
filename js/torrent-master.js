@@ -5,6 +5,8 @@ TorrentHandler = function(app) {
         'wss://pocketnet.app:3001/announce'
     ]
 
+    self.store = {};
+
     //cash со статусами
 
     self.seed = function(file, clbk) {

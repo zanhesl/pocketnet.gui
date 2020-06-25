@@ -107,7 +107,7 @@ var share = (function(){
 			embeding20 : function(value){
 
 				var storage = currentShare.export(true)
-
+				
 				self.nav.api.load({
 					open : true,
 					id : 'embeding20',
@@ -185,7 +185,6 @@ var share = (function(){
 										type = 'images';
 										value = value
 									}
-									console.log(value);
 									
 
 									if(!_.isArray(value)) value = [value]
@@ -247,7 +246,11 @@ var share = (function(){
 			},
 			editImage : function(r){
 				var m = _.map(currentShare.images.v, function(src, i){
-
+					if (src.indexOf('ih: ') > -1) {
+						var ih = src.split('ih: ')[1]
+						src = self.app.torrentHandler.store[ih]
+					}
+					
 					return {
 						original : src,
 						index : i
@@ -1309,6 +1312,10 @@ var share = (function(){
 					el : el.images,
 					data : {
 						images : _.map(currentShare.images.v || [], function(i, index){
+							if (i.indexOf('ih: ') > -1) {
+								var ih = i.split('ih: ')[1]
+								i = self.app.torrentHandler.store[ih]
+							}
 							return {
 								src : i,
 								id : index
@@ -1326,7 +1333,8 @@ var share = (function(){
 
 					p.el.find('.edit').on('click', function(){
 						var r = $(this).closest('.imageContainer').attr('value');
-
+						console.log('rrrrrrr', r);
+						
 						actions.editImage(r)
 					})
 
@@ -1725,7 +1733,7 @@ var share = (function(){
 				external = null
 
 				currentShare = deep(p, 'settings.essenseData.share') || new Share();
-
+				
 				essenseData = deep(p, 'settings.essenseData') || {};
 
 				self.app.platform.sdk.user.get(function(u){

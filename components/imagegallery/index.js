@@ -185,7 +185,12 @@ var imagegallery = (function(){
 				$(window).off('resize', helpers.resize)
 
 				if(!p) p = {};
+				
+				if (p.image.src.indexOf('ih: ') > -1) {
+					var ih = p.image.src.split('ih: ')[1]
+					p.image.src = self.app.torrentHandler.store[ih]
 
+				}
 				self.shell({
 					name :  'image',
 					el :   el.images,
@@ -205,6 +210,7 @@ var imagegallery = (function(){
 						making = false;
 
 						currentImage = deep(image, 'images.0.img');
+						
 
 						if (currentImage)
 						{

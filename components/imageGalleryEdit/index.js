@@ -581,7 +581,7 @@ var imageGalleryEdit = (function(){
 				$(window).off('resize', helpers.resize)
 
 				if(!p) p = {};
-
+				
 				self.shell({
 					name :  'image',
 					el :   el.images,
