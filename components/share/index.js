@@ -1312,10 +1312,10 @@ var share = (function(){
 					el : el.images,
 					data : {
 						images : _.map(currentShare.images.v || [], function(i, index){
-							if (i.indexOf('ih: ') > -1) {
-								var ih = i.split('ih: ')[1]
-								i = self.app.torrentHandler.store[ih]
-							}
+							// if (i.indexOf('ih: ') > -1) {
+							// 	var ih = i.split('ih: ')[1]
+							// 	i = self.app.torrentHandler.store[ih]
+							// }
 							return {
 								src : i,
 								id : index

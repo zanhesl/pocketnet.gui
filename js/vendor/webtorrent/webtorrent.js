@@ -2298,13 +2298,6 @@ function flat (arr1) {
 }
 
 const announceList = [
-  ['udp://tracker.leechers-paradise.org:6969'],
-  ['udp://tracker.coppersurfer.tk:6969'],
-  ['udp://tracker.opentrackr.org:1337'],
-  ['udp://explodie.org:6969'],
-  ['udp://tracker.empire-js.us:1337'],
-  ['wss://tracker.btorrent.xyz'],
-  ['wss://tracker.openwebtorrent.com']
 ]
 
 /**

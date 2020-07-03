@@ -7,30 +7,39 @@ TorrentHandler = function(app) {
 
     self.store = {};
 
+    self.pending = {};
+
     //cash со статусами
 
     self.seed = function(file, clbk) {
+        
         var keyPair = app.user.keys();
         app.client.seed(
             Buffer.from(file, 'base64'), {
                 private: false,
                 announce: self.trackers,
                 info: {
+                    name: makeid(true),
                     encryptedSignature: keyPair.sign(Buffer.from(bitcoin.crypto.hash256(file), 'utf8')).toString('hex'),
                     address: app.platform.sdk.address.pnet().address,
-                    publicKey: keyPair.publicKey.toString('hex'),
+                    publicKey: keyPair.publicKey.toString('hex'),//сгенерировать адрес из паблик кей satolist/pnetsimple
                 }
             },
             torrent => {
                 console.log('started', torrent.magnetURI, torrent.infoHash);
-
+                self.pending[torrent.infoHash] = false;
                 var rationInt = setInterval(function () {
                     console.log(torrent.ratio);
 
                     if (torrent.ratio >= 1) {
+                        self.pending[torrent.infoHash] = true;
 
-                        if (clbk) clbk(torrent.infoHash);
-                        clearTimeout(rationInt);
+                        if (clbk && _.every(_.values(self.pending), function(item) {
+                            return item;
+                        })) {
+                            clearTimeout(rationInt);
+                            clbk(torrent.infoHash)
+                        };
                     }
                 }, 500);
                 torrent.on('error', function (err) {
@@ -64,7 +73,7 @@ TorrentHandler = function(app) {
                     if (keyPair.verify(
                         bitcoin.crypto.hash256(buffer.toString('base64')),
                         Buffer.from(torrent.info.encryptedSignature.toString(), 'hex') //это то что в метадату 7592
-                    )) {
+                    ) && (app.platform.sdk.address.pnetsimple(torrent.info.publicKey) === torrent.info.address) ) {
                         console.log('Verified!');
                         
                         if (clbk) clbk('data:image/png;base64,' +
