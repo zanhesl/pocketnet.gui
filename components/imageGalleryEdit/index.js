@@ -581,7 +581,6 @@ var imageGalleryEdit = (function(){
 				$(window).off('resize', helpers.resize)
 
 				if(!p) p = {};
-				
 				self.shell({
 					name :  'image',
 					el :   el.images,
@@ -591,6 +590,18 @@ var imageGalleryEdit = (function(){
 					data : {
 						data : essenseData,
 						image : p.image
+					},
+
+					torrentsAreLoading : [p.image.ih],
+
+					torImages : function(element) {
+						currentImage = element.find('img')[0];
+
+						currentOriginal = p.image;
+
+						helpers.resize();
+
+						$(window).on('resize', helpers.resize)
 					},
 
 				}, function(_p){
@@ -627,8 +638,9 @@ var imageGalleryEdit = (function(){
 
 				el.filters.html('')
 
-				resizeFit(p.image.original, 80, 80, function(resized){
+				console.log('ORIGINAL', p.image.original);
 
+				var filterResizeFunction = function(resized){
 					self.shell({
 						name :  'filters',
 						el :   el.filters,
@@ -666,8 +678,22 @@ var imageGalleryEdit = (function(){
 
 					})
 
-				})
-
+				}
+				
+				if (p.image.original.indexOf('ih: ') > -1) {
+					var filterInfohash = p.image.original.replace('ih: ', '');
+					retry(function() {
+						return self.app.torrentHandler.store[filterInfohash];
+					}, function() {
+						resizeFit(self.app.torrentHandler.store[filterInfohash], 80, 80, function(resized) {
+							filterResizeFunction(resized)
+						})
+					})
+				} else {
+					resizeFit(p.image.original, 80, 80, function(resized) {
+						filterResizeFunction(resized)
+					});
+				}
 				
 			}
 		}

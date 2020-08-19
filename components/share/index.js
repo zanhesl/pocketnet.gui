@@ -253,7 +253,6 @@ var share = (function(){
 						if (self.app.torrentHandler.store[ih]) {
 							src = self.app.torrentHandler.store[ih];
 						} else {
-							src = ih;
 							torrentsAreLoading.push(ih);
 						}
 					}
@@ -267,11 +266,10 @@ var share = (function(){
 				})
 
 				var f = _.filter(m, function(f){
-					if(f.original.indexOf('data:image') > -1){
+					if(f.original.indexOf('data:image') > -1 || f.original.indexOf('ih:') > -1){
 						return true;
 					}
 				})
-
 				focusfixed = true;
 
 				self.nav.api.load({
@@ -1338,21 +1336,16 @@ var share = (function(){
 							}
 						}),
 					},
+					torImages : function(el) {
+						if (!el.find('[ih]').length) return;
+						el.find('.imagesEmbWr').isotope();
+					},
+
+					torrentsAreLoading : torrentsAreLoading,
 
 				}, function(p){
 
-					if (torrentsAreLoading.length) {
-						_.map(torrentsAreLoading, function(torrentInfoHash) {
-							torImages(
-								p.el, 
-								{
-									loadingInfoHashes : torrentInfoHash,
-									clbk : function(file) {
-									}
-								},
-							)
-						});
-					}
+					p.el.find('.imagesEmbWr').isotope();
 
 					p.el.find('.remove').on('click', function(){
 						var r = $(this).closest('.imageContainer').attr('value');
@@ -1847,7 +1840,6 @@ var share = (function(){
 
 				el.repostWrapper = el.c.find('.repostWrapper')
 				el.postline = el.c.find('.postlineWrapper')
-
 
 				initEvents();
 

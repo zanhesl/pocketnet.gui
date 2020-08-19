@@ -1364,17 +1364,25 @@ downloadTorrentImages = function(infoHash, clbk) {
 }
 
 torImages = function(el, p){
-	el.find('[ih]').each(function(){
+	var hashesElements = el.find('[ih]');
+	if (!hashesElements.length) {
+		if(typeof p.clbk === 'function')
+			p.clbk();
+	}
+
+	hashesElements.each(function(){
 		var _el = $(this);
 		if (_el.attr('ih'))
 		{
 			var ih = _el.attr('ih')
-			_el.attr('ih', '')
+			// _el.attr('ih', '')
 		} else {
 			return;
 		}
 
 		if (p.loadingInfoHashes.indexOf(ih) === -1) return;
+
+		_el.attr('src', 'img/WebTorrent.png');
 
 		downloadTorrentImages(ih, function(base64){
 			var image = new Image()
@@ -1415,6 +1423,12 @@ torImages = function(el, p){
 					console.log('torrent', _el.attr('image'));
 					var infoHash = _el.attr('image').split('ih: ')[1];
 					var downloadedTorrent = self.app.client.get(infoHash);
+
+					_el.css('background-image', 'url(img/Webtorrent.png)');
+					_el.css('background-size', p.size || 'cover');
+					_el.css('background-position', p.position || 'center center');
+					_el.css('background-repeat', p.repeat || 'no-repeat');
+
 
 					if (downloadedTorrent) {
 						console.log('duped!');

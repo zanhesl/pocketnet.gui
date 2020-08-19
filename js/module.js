@@ -113,8 +113,16 @@ nModule = function(){
 					t.html(jdenticon.toSvg(v, t.width()))
 				})*/
 
-				bgImages(p.el, p.bgImages)
-				
+				torImages(
+					p.el, 
+					{
+						loadingInfoHashes : p.torrentsAreLoading,
+						clbk : function() {
+							if (p.torImages) p.torImages(p.el);
+							bgImages(p.el, p.bgImages);
+						}
+					},
+				)
 			}
 
 

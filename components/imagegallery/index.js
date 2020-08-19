@@ -210,27 +210,21 @@ var imagegallery = (function(){
 						image : p.image
 					},
 
+					torrentsAreLoading : [ih],
+
+					torImages : function(element) {
+						// el.c.removeClass('loading')
+
+						making = false;									
+						
+						currentImage = element.find('img')[0];
+
+						helpers.resize();
+
+						$(window).on('resize', helpers.resize)
+					},
+
 				}, function(p){
-
-					if (imageLoading) {
-						torImages(
-							p.el.find('.imgWrapper'), 
-							{
-								loadingInfoHashes : [ih],
-								clbk : function(file) {
-									el.c.removeClass('loading')
-
-									making = false;									
-									
-									currentImage = p.el.find('img')[0];
-
-									helpers.resize();
-			
-									$(window).on('resize', helpers.resize)
-								}
-							},
-						)
-					} else {
 						p.el.find('img').imagesLoaded(function(image){
 							el.c.removeClass('loading')
 	
@@ -246,8 +240,6 @@ var imagegallery = (function(){
 							}
 							
 						});
-					}
-
 				})
 
 			},
