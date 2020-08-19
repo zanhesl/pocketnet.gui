@@ -230,10 +230,11 @@ var metadisplay = function(){ %>
  
 				<div class="images hideOnFullVideo">
 					<div class="imagesContainer <%-icClass%>">
-						<% _.each(share.images, function(image){ %>
+						<% _.each(share.images, function(image){ 
+							%>
 
 							<div class="imagesWrapper">
-								<div class="image imageOpen" image="<%-image%>" i="<%-image%>">
+								<div class="image imageOpen" image="<%-image%>" i="<%-image%>" >
 								</div>
 							</div>
 

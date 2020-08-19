@@ -1437,6 +1437,14 @@ torImages = function(el, p){
 							downloadedTorrent.files[0].getBuffer(function callback(err, buffer) {
 									renderImage(('data:image/png;base64,' + buffer.toString('base64').toString()));
 								});
+						} else {
+							retry(function() {
+								return downloadedTorrent.done;
+							}, function() {
+								downloadedTorrent.files[0].getBuffer(function callback(err, buffer) {
+									renderImage(('data:image/png;base64,' + buffer.toString('base64').toString()));
+								});
+							})
 						}
 					} else {
 						console.time('torrent' + infoHash);

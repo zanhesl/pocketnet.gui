@@ -879,7 +879,6 @@ var post = (function(){
 				
 			},
 			share : function(clbk){
-
 				self.shell({
 					turi : 'lenta',
 					name :  'share',
@@ -895,6 +894,7 @@ var post = (function(){
 						mestate : {},
 						repost : ed.repost,
 						fromempty : ed.fromempty
+
 					},
 
 				}, function(_p){
