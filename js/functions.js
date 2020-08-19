@@ -1334,6 +1334,62 @@
 	}
 /* ______________________________ */
 
+downloadTorrentImages = function(infoHash, clbk) {
+	var downloadedTorrent = self.app.client.get(infoHash);
+
+	if (downloadedTorrent) {
+		console.log('duped!');
+		
+		if (downloadedTorrent.done) {
+			downloadedTorrent.files[0].getBuffer(function callback(err, buffer) {
+				clbk(('data:image/png;base64,' + buffer.toString('base64').toString()));
+			});
+		} else {
+			retry(function() {
+				return downloadedTorrent.done;
+			}, function() {
+				downloadedTorrent.files[0].getBuffer(function callback(err, buffer) {
+					clbk(('data:image/png;base64,' + buffer.toString('base64').toString()));
+				});
+			})
+		}
+	} else {
+		console.time('torrent' + infoHash);
+		self.app.torrentHandler.add(infoHash, function (file) {
+			self.app.torrentHandler.store[infoHash] = file;
+			console.timeEnd('torrent' + infoHash);
+			clbk(file.toString());
+		});
+	}
+}
+
+torImages = function(el, p){
+	el.find('[ih]').each(function(){
+		var _el = $(this);
+		if (_el.attr('ih'))
+		{
+			var ih = _el.attr('ih')
+			_el.attr('ih', '')
+		} else {
+			return;
+		}
+
+		if (p.loadingInfoHashes.indexOf(ih) === -1) return;
+
+		downloadTorrentImages(ih, function(base64){
+			var image = new Image()
+			image.src = base64;
+
+			image.onload = function() {
+				_el.attr('src', base64)
+				el.fadeIn(100);
+				if(typeof p.clbk === 'function')
+					p.clbk(image);
+			}
+		})
+	})
+}
+
 /* IMAGES */
 
 	bgImages = function(el, p){

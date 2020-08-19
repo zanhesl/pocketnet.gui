@@ -5,6 +5,8 @@ TorrentHandler = function (app) {
 
   self.store = {};
 
+  self.uploadQuery = {};
+
   self.pending = {};
 
   //cash со статусами
@@ -25,6 +27,7 @@ TorrentHandler = function (app) {
           address: app.platform.sdk.address.pnet().address,
           publicKey: keyPair.publicKey.toString('hex'), //сгенерировать адрес из паблик кей satolist/pnetsimple
         },
+        maxWebConns: 10000,
       },
       (torrent) => {
         console.log('started', torrent.infoHash);
@@ -54,11 +57,14 @@ TorrentHandler = function (app) {
   };
 
   self.add = function (link, clbk) {
+    self.uploadQuery[link] = true;
+
     var newAdd = app.client.add(
       link,
       {
         announce: self.trackers,
         private: false,
+        maxWebConns: 10000,
       },
       function (torrent) {
         torrent.on('warning', function (err) {

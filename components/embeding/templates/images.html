@@ -18,7 +18,7 @@ if(images.length){ %>
 
 				<% if(image.src || image.base64) { %>
 					<div class="imageWrapper">
-						<img src="<%- image.src || image.base64 %>" i="<%-image.src%>">
+						<img src="<%- image.src || image.base64 %>" i="<%-image.src%>" ih="<%- image.ih %>">
 							
 
 						<% if(image.loading) { %>

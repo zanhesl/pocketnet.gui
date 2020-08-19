@@ -185,10 +185,19 @@ var imagegallery = (function(){
 				$(window).off('resize', helpers.resize)
 
 				if(!p) p = {};
-				
+
+				var imageLoading = false;
+				var ih;
+
 				if (p.image.src.indexOf('ih: ') > -1) {
-					var ih = p.image.src.split('ih: ')[1]
-					p.image.src = self.app.torrentHandler.store[ih]
+					ih = p.image.src.split('ih: ')[1]
+					if (self.app.torrentHandler.store[ih]) {
+						p.image.src = self.app.torrentHandler.store[ih]
+					} else {
+						imageLoading = true;
+					}
+
+					p.image.ih = ih;
 
 				}
 				self.shell({
@@ -202,24 +211,42 @@ var imagegallery = (function(){
 					},
 
 				}, function(p){
-					
-					p.el.find('img').imagesLoaded(function(image){
 
-						el.c.removeClass('loading')
+					if (imageLoading) {
+						torImages(
+							p.el.find('.imgWrapper'), 
+							{
+								loadingInfoHashes : [ih],
+								clbk : function(file) {
+									el.c.removeClass('loading')
 
-						making = false;
+									making = false;									
+									
+									currentImage = p.el.find('img')[0];
 
-						currentImage = deep(image, 'images.0.img');
-						
+									helpers.resize();
+			
+									$(window).on('resize', helpers.resize)
+								}
+							},
+						)
+					} else {
+						p.el.find('img').imagesLoaded(function(image){
+							el.c.removeClass('loading')
+	
+							making = false;
+	
+							currentImage = deep(image, 'images.0.img');
 
-						if (currentImage)
-						{
-							helpers.resize();
-
-							$(window).on('resize', helpers.resize)
-						}
-						
-					});
+							if (currentImage)
+							{
+								helpers.resize();
+	
+								$(window).on('resize', helpers.resize)
+							}
+							
+						});
+					}
 
 				})
 

@@ -245,15 +245,23 @@ var share = (function(){
 
 			},
 			editImage : function(r){
+				var torrentsAreLoading = [];
+
 				var m = _.map(currentShare.images.v, function(src, i){
 					if (src.indexOf('ih: ') > -1) {
 						var ih = src.split('ih: ')[1]
-						src = self.app.torrentHandler.store[ih]
+						if (self.app.torrentHandler.store[ih]) {
+							src = self.app.torrentHandler.store[ih];
+						} else {
+							src = ih;
+							torrentsAreLoading.push(ih);
+						}
 					}
 					
 					return {
 						original : src,
-						index : i
+						index : i,
+						ih : ih || '',
 					}
 					
 				})
@@ -275,6 +283,7 @@ var share = (function(){
 						edit : true,
 						initialValue : r,
 						images : f,
+						loadingTorrents : torrentsAreLoading,
 
 						/*apply : true,
 
@@ -1305,6 +1314,7 @@ var share = (function(){
 			},
 
 			images : function(clbk){
+				var torrentsAreLoading = [];
 				self.shell({
 					name :  'images',
 					turi : 'embeding',
@@ -1312,19 +1322,37 @@ var share = (function(){
 					el : el.images,
 					data : {
 						images : _.map(currentShare.images.v || [], function(i, index){
-							console.log('IIIII', i);
 							if (i.indexOf('ih: ') > -1) {
 								var ih = i.split('ih: ')[1]
-								i = self.app.torrentHandler.store[ih] || i;
+								if (self.app.torrentHandler.store[ih]) {
+									i = self.app.torrentHandler.store[ih];
+								} else {
+									i = ih;
+									torrentsAreLoading.push(ih);
+								}
 							}
 							return {
 								src : i,
-								id : index
+								id : index,
+								ih : ih || '',
 							}
-						})
+						}),
 					},
 
 				}, function(p){
+
+					if (torrentsAreLoading.length) {
+						_.map(torrentsAreLoading, function(torrentInfoHash) {
+							torImages(
+								p.el, 
+								{
+									loadingInfoHashes : torrentInfoHash,
+									clbk : function(file) {
+									}
+								},
+							)
+						});
+					}
 
 					p.el.find('.remove').on('click', function(){
 						var r = $(this).closest('.imageContainer').attr('value');
@@ -1344,6 +1372,7 @@ var share = (function(){
 						var src = $(this).attr('i')
 
 						if(!src) return
+						
 
 						var images = _.map(currentShare.images, function(i){
 
