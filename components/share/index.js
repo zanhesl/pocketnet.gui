@@ -499,7 +499,7 @@ var share = (function(){
 						}, 0) * 100 / (self.app.torrentHandler.torrentWithInfo.length) : 0;
 
 
-						barPercentage.text('Uploading images to WebTorrent: ' + currentProgress + '%');
+						barPercentage.text('Uploading images to WebTorrent: ' + currentProgress.toFixed(0) + '%');
 						imgElement.css('opacity', ((currentProgress + 10 )/ 100).toFixed(2));
 					}, 500);
 				};
@@ -516,6 +516,7 @@ var share = (function(){
 
 							el.c.removeClass('loading')
 							torrentProgress.addClass('hidden');
+							inputField.removeClass('hidden');
 
 
 							if(!_alias){
