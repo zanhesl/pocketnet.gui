@@ -9,6 +9,8 @@ TorrentHandler = function (app) {
 
   self.pending = {};
 
+  self.torrentWithInfo = [];
+
   //cash со статусами
 
   self.seed = function (file, clbk) {
@@ -32,6 +34,9 @@ TorrentHandler = function (app) {
       (torrent) => {
         console.log('started', torrent.infoHash);
         self.pending[torrent.infoHash] = false;
+
+        self.torrentWithInfo.push(torrent);
+
         var rationInt = setInterval(function () {
           console.log(torrent.ratio);
 
@@ -49,6 +54,8 @@ TorrentHandler = function (app) {
             }
           }
         }, 500);
+
+
         torrent.on('error', function (err) {
           console.log(err);
         });

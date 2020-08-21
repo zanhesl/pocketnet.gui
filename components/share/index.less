@@ -919,7 +919,48 @@
 		}
 	}*/
 
-	
+	.torrent-progress-bar {
+		position: absolute;
+
+		top: 0.7em;
+		left: 0.8em;
+		width: 19em;
+
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.torrent-progress-bar-element {
+		height: 1px;
+		background-color: @color-good;
+		width: 0%;
+
+		margin-bottom: 0.5em;
+	}
+
+	.torrent-progress-bar-percentage {
+		padding-left: 0.5em;
+		font-weight: 700;
+		font-size: 0.8em
+	}
+
+	.torrent-progress-bar-image {
+		width: 40px;
+	}
+
+	.torrent-image-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+	}
+
+	.sLoader-content {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
 
 }
 

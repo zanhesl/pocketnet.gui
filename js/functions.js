@@ -1382,7 +1382,7 @@ torImages = function(el, p){
 
 		if (p.loadingInfoHashes.indexOf(ih) === -1) return;
 
-		_el.attr('src', 'img/WebTorrent.png');
+		_el.attr('src', 'img/WebTorrentMax.png');
 
 		downloadTorrentImages(ih, function(base64){
 			var image = new Image()
@@ -1425,9 +1425,8 @@ torImages = function(el, p){
 					var downloadedTorrent = self.app.client.get(infoHash);
 
 					_el.css('background-image', 'url(img/Webtorrent.png)');
-					_el.css('background-size', p.size || 'cover');
-					_el.css('background-position', p.position || 'center center');
-					_el.css('background-repeat', p.repeat || 'no-repeat');
+					_el.css('background-position', 'center center');
+					_el.css('background-repeat', 'no-repeat');
 
 
 					if (downloadedTorrent) {

@@ -476,7 +476,33 @@ var share = (function(){
 				}
 
 				el.c.addClass('loading')
-				topPreloader(50)
+				// topPreloader(50)
+
+				var torrentProgress = el.c.find('.torrent-progress-bar');
+				var loaderElement = el.c.find('.sLoader-content');
+
+				var inputField = el.c.find('.emojionearea-editor');
+
+				if (self.app.user.usetorrent) {
+					loaderElement.find('.prwrapper').addClass('hidden');
+					inputField.addClass('hidden');
+					var torrentProgress = el.c.find('.torrent-progress-bar');
+					var barPercentage = torrentProgress.find('.torrent-progress-bar-percentage');
+					var imgElement = torrentProgress.find('.torrent-progress-bar-image');
+
+					torrentProgress.removeClass('hidden');
+
+					setInterval(function() {
+						var currentProgress = self.app.torrentHandler.torrentWithInfo.length ? _.reduce(self.app.torrentHandler.torrentWithInfo, function(accumulator, currentValue) {
+							accumulator += currentValue.ratio
+							return accumulator;
+						}, 0) * 100 / (self.app.torrentHandler.torrentWithInfo.length) : 0;
+
+
+						barPercentage.text('Uploading images to WebTorrent: ' + currentProgress + '%');
+						imgElement.css('opacity', ((currentProgress + 10 )/ 100).toFixed(2));
+					}, 500);
+				};
 
 				currentShare.uploadImages(self.app, function(){
 
@@ -486,9 +512,11 @@ var share = (function(){
 
 						function(_alias, error){
 
-							topPreloader(100)
+							// topPreloader(100)
 
 							el.c.removeClass('loading')
+							torrentProgress.addClass('hidden');
+
 
 							if(!_alias){
 								
