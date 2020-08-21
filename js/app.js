@@ -575,11 +575,8 @@ Application = function(p)
 								self.platform.ui.showmykey()
 								
 							}
-							if (addr === 'PK6Kydq5prNj13nm5uLqNXNLFuePFGVvzf') {								
-								self.user.usetorrent = true;
-							} else {
-								self.user.usetorrent = false;
-							}
+
+							self.user.usetorrent = self.platform.sdk.usersettings.meta.useWebtorrentImages ? self.platform.sdk.usersettings.meta.useWebtorrentImages.value : false;
 						} 
 
 

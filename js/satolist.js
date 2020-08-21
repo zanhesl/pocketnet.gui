@@ -3311,7 +3311,14 @@ Platform = function(app, listofnodes){
 					id : 'vidgetlastcomments',
 					type : "BOOLEAN",
 					value : true
-                },
+				},
+				
+				useWebtorrentImages : {
+					name: 'Use WebTorrent for image sharing',
+					id : 'useWebtorrentImages',
+					type : "BOOLEAN",
+					value : false,
+				},
 			},
 
 			create : function(id){
@@ -3367,6 +3374,13 @@ Platform = function(app, listofnodes){
 							videoautoplay : options.videoautoplay
 
 						}
+					},
+
+					image : {
+						name : 'Images', 
+						options : {
+							useWebtorrentImages : options.useWebtorrentImages,
+						},
 					},
 
 
