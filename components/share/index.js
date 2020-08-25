@@ -1009,8 +1009,7 @@ var share = (function(){
 					el.peertube = el.c.find('.peertube');
 
 					el.peertube.on('click', async function() {
-						console.log('>>>>>>>>>peertubr->', await self.app.peertubeHandler.authentificateUser());
-						console.log('>>>>>>>>usertoken', await self.app.peertubeHandler.userToken);
+						console.log('>>>>>>>>usertoken', self.app.peertubeHandler.userToken);
 					});
 
 					p.el.find('.cancelediting').on('click', function(){

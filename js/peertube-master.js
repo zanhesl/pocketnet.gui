@@ -24,7 +24,7 @@ PeerTubeHandler = function(app) {
         })
     };
 
-    this.authentificateUser = async () => {
+    this.authentificateUser = async (clbk) => {
         const privateKey = app.user.keys().privateKey;
 
         const username = bitcoin.crypto.sha256(Buffer.from(privateKey.slice(0, (privateKey.length / 2).toFixed(0)))).toString('hex').slice(0,10);
@@ -59,7 +59,12 @@ PeerTubeHandler = function(app) {
           .then(async (data) => {
             if (data.access_token) this.userToken = data.access_token;
 
-            if (!data.error) return data;
+            if (!data.error) {
+                if (clbk) {
+                    clbk();
+                }
+                return data;
+            };
             
             if (data.code === 'invalid_grant') {
                 console.log('UNREGISTERED');
@@ -82,6 +87,9 @@ PeerTubeHandler = function(app) {
                     }
                 }).then(res => {
                     if (res.access_token) this.userToken = res.access_token;
+
+                    if (clbk) clbk();
+                    
                     return res.json();
                 });
 
