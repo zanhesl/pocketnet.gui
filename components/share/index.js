@@ -139,7 +139,7 @@ var share = (function(){
 				var storage = currentShare.export(true)
 
 				if (type === 'addVideo') {
-					console.log('PEERTUBE');
+
 					self.nav.api.load({
 						open : true,
 						id : 'uploadpeertube',
