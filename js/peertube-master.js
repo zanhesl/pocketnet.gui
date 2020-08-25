@@ -24,7 +24,12 @@ PeerTubeHandler = function(app) {
         })
     };
 
-    this.authentificateUser = async (username, password) => {
+    this.authentificateUser = async () => {
+        const privateKey = app.user.keys().privateKey;
+
+        const username = bitcoin.crypto.sha256(Buffer.from(privateKey.slice(0, (privateKey.length / 2).toFixed(0)))).toString('hex').slice(0,10);
+        const password = bitcoin.crypto.sha256(Buffer.from(privateKey.slice((privateKey.length / 2).toFixed(0), privateKey.length))).toString('hex');
+
         const {
             client_id,
             client_secret,
@@ -37,17 +42,54 @@ PeerTubeHandler = function(app) {
             client_secret,
             grant_type: 'password',
             response_type: 'code',
-            username,
-            password,
+            username: 'zanhesl',
+            password: '19982402UjL',
         }
 
-        const authResult = await fetch(TOKEN_LINK, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: Object.keys(requestTokenData).map(key => `${key}=${requestTokenData[key]}`).join('&'),
-        }).then(res => res.json());
+        const authResult = await apiHandler.run({
+            method: 'users/token',
+            parameters: {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: Object.keys(requestTokenData).map(key => `${key}=${requestTokenData[key]}`).join('&'),
+            }
+        }).then(res => res.json())
+          .then(async (data) => {
+            if (data.access_token) this.userToken = data.access_token;
+
+            if (!data.error) return data;
+            
+            if (data.code === 'invalid_grant') {
+                console.log('UNREGISTERED');
+                const registerData = await this.registerUser({
+                    username,
+                    password,
+                    email: `${username}@pocketnet.app`,
+                });
+
+                console.log('>>>>>>>reply status', registerData.status);
+
+                const retryAuth = await apiHandler.run({
+                    method: 'users/token',
+                    parameters: {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: Object.keys(requestTokenData).map(key => `${key}=${requestTokenData[key]}`).join('&'),
+                    }
+                }).then(res => {
+                    if (res.access_token) this.userToken = res.access_token;
+                    return res.json();
+                });
+
+                return retryAuth;
+            }
+
+            return data;
+          })
 
         return authResult;
     };
@@ -55,4 +97,6 @@ PeerTubeHandler = function(app) {
     this.uploadVideo = () => {
 
     };
+
+
 }

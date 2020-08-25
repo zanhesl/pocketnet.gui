@@ -41,6 +41,7 @@ __map =  {
 		"js/satolist.js",
 		"messenger2/clientrtc.js",
 		"js/torrent-master.js",
+		"js/peertube-master.js",
 		"js/app.js",
 		"js/main.js",
 	],

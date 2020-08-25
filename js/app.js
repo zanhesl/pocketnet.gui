@@ -428,6 +428,8 @@ Application = function(p)
 		self.client = new WebTorrent();
 
 		self.torrentHandler = new TorrentHandler(app);
+
+		self.peertubeHandler = new PeerTubeHandler(app);
 		
 
 		self.options.platform = self.platform
