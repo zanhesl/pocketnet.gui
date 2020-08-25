@@ -84,6 +84,8 @@ var uploadpeertube = (function(){
 							wallpaperError.text('');
 							nameError.text('');
 
+							var filesArray = [];
+
 							// validation
 							if (!videoInputFile[0]) {
 								videoError.text('No video selected');
@@ -95,12 +97,17 @@ var uploadpeertube = (function(){
 								
 								return;
 							};
+
+							filesArray.push(videoInputFile[0]);
+
 							if (videoWallpaperFile[0]) {
 								if (!videoWallpaperFile[0].type.includes('image')) {
 									wallpaperError.text('Incorrect wallpaper format');
 	
 									return;
 								};
+
+								filesArray.push(videoWallpaperFile[0]);
 							}
 							if (!videoName) {
 								nameError.text('Name is empty');
@@ -108,10 +115,28 @@ var uploadpeertube = (function(){
 								return;
 							}
 
-							const fileReader = new FileReader();
+							var filesWrittenArray = []
 
-							// console.log(videoInput.prop('files'), videoWallpaper.prop('files'), videoName);
-							console.log(videoInputFile[0].type);
+							lazyEach({
+								array : filesArray,
+								action : function(p){
+									var filePeertube = p.item
+
+									var fileReader = new FileReader();
+									fileReader.onload = function(file) {
+										console.log(file);
+										filesWrittenArray.push(fileReader.result);
+										p.success();
+									};
+									fileReader.readAsBinaryString(filePeertube);
+								},
+		
+								all : {
+									success : function() {
+										console.log(filesWrittenArray);
+									}
+								}
+							})
 						}
 					}
 
