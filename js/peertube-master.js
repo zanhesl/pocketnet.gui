@@ -89,7 +89,7 @@ PeerTubeHandler = function(app) {
                     if (res.access_token) this.userToken = res.access_token;
 
                     if (clbk) clbk();
-                    
+
                     return res.json();
                 });
 
@@ -103,7 +103,7 @@ PeerTubeHandler = function(app) {
     };
 
     this.uploadVideo = () => {
-
+        
     };
 
 

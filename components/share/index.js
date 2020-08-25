@@ -138,6 +138,33 @@ var share = (function(){
 
 				var storage = currentShare.export(true)
 
+				if (type === 'addVideo') {
+					console.log('PEERTUBE');
+					self.nav.api.load({
+						open : true,
+						id : 'uploadpeertube',
+						inWnd : true,
+
+						history : true,
+
+						essenseData : {
+							storage : storage,
+							value : value,
+							on : {
+								added : function(value){
+
+									
+								}
+							}
+						},
+
+						clbk : function(p){
+							external = p
+						}
+					})
+					return true;
+				} 
+
 				if(type == 'article'){
 					self.nav.api.load({
 						open : true,

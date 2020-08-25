@@ -426,6 +426,33 @@ __map =  {
 			
 			
 		},
+		uploadpeertube : {
+			uri : "uploadpeertube",
+			href : "uploadpeertube",
+			add : function(settings, p){
+
+				if(p.inWnd)
+				{
+					return {
+						insert : 'wnd'
+					}
+				}
+				else
+				if(p.inTooltip)
+				{
+					return {
+						insert : 'tooltip'
+					}
+				}
+				else
+				{
+					return {
+						el : 'content'
+					}
+				}
+
+			},
+		},
 
 		/*rep : {
 			uri : "rep",
