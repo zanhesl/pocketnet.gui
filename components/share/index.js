@@ -225,6 +225,8 @@ var share = (function(){
 										}
 									})
 
+									console.log('SHaaaaare', currentShare[type]);
+
 									if(!result && errors[type]){
 
 										sitemessage(errors[type])

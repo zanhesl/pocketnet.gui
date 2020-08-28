@@ -2,14 +2,52 @@
 
 #uploadpeertube{
 
+    .upload-header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
     .logo-container {
         img {
-            width: 100px;
+            width: 1em;
         }
+
+        margin-right: 0.5em;
+    }
+
+    .upload-field-container {
+       color: @color-add;
+    }
+
+    .upload-field-container:not(:first-child){
+        margin-top: @rhythm * 2;
     }
 
 
     .type-error-field {
         color: @color-bad;
+    }
+
+    label {
+        cursor: pointer;
+    }
+}
+
+
+.wnd.uploadpeertube {
+    .wndinner {
+        width: 50%;
+        height: 50%;
+
+        min-height: 400px;
+
+        overflow: scroll;
+
+        .wndcontent {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
     }
 }

@@ -69,7 +69,7 @@ var uploadpeertube = (function(){
 
 					close : {
 						class : "close",
-						html : '<i class="fa fa-check"></i> Finish',
+						html : '<i class="fas fa-upload"></i> Upload',
 						fn : function(wnd, wndObj){
 							var videoInputFile = wnd.find('.upload-video-file').prop('files');
 							var videoError = wnd.find('.file-type-error');
