@@ -4,11 +4,21 @@ PeerTubeHandler = function(app) {
         baseUrl: 'https://pocketnetpeertube.nohost.me/api/v1/',
 
         run({method, parameters}) {
-            return fetch(`${this.baseUrl}${method}`, parameters);
+            return fetch(`${this.baseUrl}${method}`, parameters).catch(err => {
+                console.log(err);
+
+                return err;
+            });
         },
     };
 
+    const makeBodyFromObject = (objectToHandle) => {
+        return Object.keys(objectToHandle).map(key => `${key}=${objectToHandle[key]}`).join('&')
+    }
+
     this.userToken = '';
+    this.userName = '';
+    this.password = '';
 
     this.registerUser = (userInfo) => {
         return apiHandler.run({
@@ -30,20 +40,31 @@ PeerTubeHandler = function(app) {
         const username = bitcoin.crypto.sha256(Buffer.from(privateKey.slice(0, (privateKey.length / 2).toFixed(0)))).toString('hex').slice(0,10);
         const password = bitcoin.crypto.sha256(Buffer.from(privateKey.slice((privateKey.length / 2).toFixed(0), privateKey.length))).toString('hex');
 
+        this.userName = 'zanhesl';
+        this.password = '19982402UjL';
+
         const {
             client_id,
             client_secret,
         } = await apiHandler.run({
             method: 'oauth-clients/local',
-        }).then(res => res.json());
+        }).then(res => {
+            return res.json ? res.json() : res;
+        });
+
+        if (!client_id || !client_secret) {
+            clbk();
+
+            return {};
+        }
 
         const requestTokenData = {
             client_id,
             client_secret,
             grant_type: 'password',
             response_type: 'code',
-            username: 'zanhesl',
-            password: '19982402UjL',
+            username: this.userName,
+            password: this.password,
         }
 
         const authResult = await apiHandler.run({
@@ -53,9 +74,11 @@ PeerTubeHandler = function(app) {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: Object.keys(requestTokenData).map(key => `${key}=${requestTokenData[key]}`).join('&'),
+                body: makeBodyFromObject(requestTokenData),
             }
-        }).then(res => res.json())
+        }).then(res => {
+            return res.json ? res.json() : res;
+        })
           .then(async (data) => {
             if (data.access_token) this.userToken = data.access_token;
 
@@ -83,7 +106,7 @@ PeerTubeHandler = function(app) {
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
                         },
-                        body: Object.keys(requestTokenData).map(key => `${key}=${requestTokenData[key]}`).join('&'),
+                        body: makeBodyFromObject(requestTokenData),
                     }
                 }).then(res => {
                     if (res.access_token) this.userToken = res.access_token;
@@ -91,7 +114,7 @@ PeerTubeHandler = function(app) {
                     if (clbk) clbk();
 
                     return res.json();
-                });
+                })
 
                 return retryAuth;
             }
@@ -99,11 +122,56 @@ PeerTubeHandler = function(app) {
             return data;
           })
 
+        if (clbk) clbk();
         return authResult;
     };
 
-    this.uploadVideo = () => {
-        
+    this.getChannel = async () => {
+        return apiHandler.run({
+            method : `video-channels/${this.userName}_channel`,
+        }).then(res => res.json());
+    };
+
+    this.uploadVideo = async (parameters) => {
+        console.log(parameters);
+
+        const channelInfo = await this.getChannel();
+
+        // console.log('BLOOOOOOOB', new Blob({
+        //     updateAt : new Date(),
+        //     privacy : 1,
+        // }));
+
+        const bodyOfQuery = {
+            privacy : 1,
+            'scheduleUpdate[updateAt]': new Date().toISOString(),
+            channelId : channelInfo.id,
+            name : parameters.name || `${this.userName}:${new Date().toISOString()}`,
+            videofile : parameters.video,
+        }
+
+        if (parameters.image) {
+            bodyOfQuery.previewfile = parameters.image;
+            bodyOfQuery.thumbnailfile = parameters.image;
+        }
+
+        const formData = new FormData();
+
+        Object.keys(bodyOfQuery).map(key => formData.append(key, bodyOfQuery[key]));
+
+        apiHandler.run({
+            method : 'videos/upload',
+            parameters : {
+                method : 'POST',
+                headers : {
+                    Authorization : `Bearer ${this.userToken}`,
+                    // 'Content-Type' : 'multipart/form-data',
+                },
+                body : formData,
+            }
+        })
+          .then(res => res.json())
+          .then(data => console.log('DDDDDDDDD', data));
     };
 
 

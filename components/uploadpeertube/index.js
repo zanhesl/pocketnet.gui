@@ -84,7 +84,7 @@ var uploadpeertube = (function(){
 							wallpaperError.text('');
 							nameError.text('');
 
-							var filesArray = [];
+							var filesWrittenObject = {};
 
 							// validation
 							if (!videoInputFile[0]) {
@@ -98,16 +98,17 @@ var uploadpeertube = (function(){
 								return;
 							};
 
-							filesArray.push(videoInputFile[0]);
+							filesWrittenObject.video = videoInputFile[0];
 
 							if (videoWallpaperFile[0]) {
-								if (!videoWallpaperFile[0].type.includes('image')) {
-									wallpaperError.text('Incorrect wallpaper format');
+								console.log(videoWallpaperFile);
+								if (videoWallpaperFile[0].type !== 'image/jpeg' || videoWallpaperFile[0].type !== 'image/jpg') {
+									wallpaperError.text('Incorrect wallpaper format. Supported: .jpg, .jpeg');
 	
 									return;
 								};
 
-								filesArray.push(videoWallpaperFile[0]);
+								filesWrittenObject.image = videoWallpaperFile[0];
 							}
 							if (!videoName) {
 								nameError.text('Name is empty');
@@ -115,28 +116,28 @@ var uploadpeertube = (function(){
 								return;
 							}
 
-							var filesWrittenArray = []
+							filesWrittenObject.name = videoName;
 
-							lazyEach({
-								array : filesArray,
-								action : function(p){
-									var filePeertube = p.item
-
-									var fileReader = new FileReader();
-									fileReader.onload = function(file) {
-										console.log(file);
-										filesWrittenArray.push(fileReader.result);
-										p.success();
-									};
-									fileReader.readAsBinaryString(filePeertube);
-								},
+							self.app.peertubeHandler.uploadVideo(filesWrittenObject);
+							// lazyEach({
+							// 	array : filesArray,
+							// 	action : function(p){
+							// 		var filePeertube = p.item;
+							// 		var fileType = filePeertube.type.split('/')[0];
+							// 		var fileReader = new FileReader();
+							// 		fileReader.onload = function(file) {
+							// 			filesWrittenObject[fileType] = fileReader.result;
+							// 			p.success();
+							// 		};
+							// 		fileReader.readAsBinaryString(filePeertube);
+							// 	},
 		
-								all : {
-									success : function() {
-										console.log(filesWrittenArray);
-									}
-								}
-							})
+							// 	all : {
+							// 		success : function() {
+							// 			self.app.peertubeHandler.uploadVideo(filesWrittenObject);
+							// 		}
+							// 	}
+							// })
 						}
 					}
 
