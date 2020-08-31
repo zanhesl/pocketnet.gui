@@ -50,7 +50,9 @@ var uploadpeertube = (function(){
 		return {
 			primary : primary,
 
-			getdata : function(clbk){
+			getdata : function(clbk, p){
+
+				actions = p.settings.essenseData.actions;
 
 				var data = {};
 
@@ -72,6 +74,7 @@ var uploadpeertube = (function(){
 				el.videoWallpaper = el.c.find('.upload-video-wallpaper');
 				el.videoError = el.c.find('.file-type-error');
 				el.wallpaperError = el.c.find('.wallpaper-type-error');
+				el.uploadProgress = el.c.find('.upload-progress-container')
 
 				initEvents();
 
@@ -86,8 +89,8 @@ var uploadpeertube = (function(){
 						class : "close",
 						html : '<i class="fas fa-upload"></i> Upload',
 						fn : function(wnd, wndObj){
+							
 							var videoInputFile = el.videoInput.prop('files');
-							// var videoError = wnd.find('.file-type-error');
 
 							var videoWallpaperFile = el.videoWallpaper.prop('files');
 							// var wallpaperError = wnd.find('.wallpaper-type-error');
@@ -95,8 +98,6 @@ var uploadpeertube = (function(){
 							var videoName = wnd.find('.upload-video-name').val();
 							var nameError = wnd.find('.name-type-error');
 
-							el.videoError.text('');
-							el.wallpaperError.text('');
 							nameError.text('');
 
 							var filesWrittenObject = {};
@@ -137,13 +138,24 @@ var uploadpeertube = (function(){
 							filesWrittenObject.name = videoName;
 
 							filesWrittenObject.uploadFunction = function(percentComplete){
-								console.log('Uploaded ', percentComplete, ' %', new Date());
+								var formattedProgress = percentComplete.toFixed(2);
+
+								el.uploadProgress.find('.upload-progress-bar').css('width', formattedProgress + '%');
+								el.uploadProgress.find('.upload-progress-percentage').text(formattedProgress + '%');
 							}
 
-							filesWrittenObject.successFunction = function(json){
-								console.log('Finished!', json, new Date());
+							filesWrittenObject.successFunction = function(response){
+								if (response === 'error') {
+									sitemessage('Uploading error');
+
+									return;
+								};
+
+								actions.added(response);
+								wndObj.close();
 							}
 
+							el.uploadProgress.removeClass('hidden');
 							self.app.peertubeHandler.uploadVideo(filesWrittenObject);
 						}
 					}

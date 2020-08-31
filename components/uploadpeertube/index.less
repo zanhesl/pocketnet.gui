@@ -9,6 +9,10 @@
         align-items: center;
     }
 
+    .type-error-field {
+        color: #0a0c17;
+    }
+
     .error-message {
         color: @color-bad;
     }
@@ -33,13 +37,34 @@
         margin-top: @rhythm * 2;
     }
 
-
-    .type-error-field {
-        color: #0a0c17;
-    }
-
     label {
         cursor: pointer;
+    }
+
+    .bold-font {
+        font-weight: bold;
+    }
+
+    .upload-video-name {
+        border-width: 0;
+
+        border-bottom-width: 1px;
+    }
+
+    .upload-progress-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: flex-start;
+
+        margin-top: @rhythm * 4;
+    }
+
+    .upload-progress-bar {
+        height: 1px;
+        width: 100%;
+
+        background-color: green;
     }
 }
 
@@ -55,7 +80,7 @@
 
         .wndcontent {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-around;
         }
     }

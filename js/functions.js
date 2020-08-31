@@ -9628,7 +9628,14 @@ torImages = function(el, p){
 			    }
 
 	    	}
-	    }
+		}
+		
+		if (url.includes('videos/watch/')) {
+			type = 'peertube';
+			id = url.split('watch/')[1]
+
+			console.log(url, type, id);
+		}
 
 	    return {
 	        type: type,

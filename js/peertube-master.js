@@ -29,6 +29,7 @@ PeerTubeHandler = function(app) {
     this.userToken = '';
     this.userName = '';
     this.password = '';
+    this.uploadProgress = 0;
 
     this.registerUser = (userInfo) => {
         return apiHandler.run({
@@ -175,19 +176,20 @@ PeerTubeHandler = function(app) {
                     Authorization : `Bearer ${this.userToken}`,
                 },
 
-                xhr: function(){
+                xhr: () => {
                     const xhr = $.ajaxSettings.xhr(); // получаем объект XMLHttpRequest
                     xhr.upload.addEventListener('progress', function(evt){ // добавляем обработчик события progress (onprogress)
                       if(evt.lengthComputable) { 
                         const percentComplete = evt.loaded / evt.total * 100;
 
+                        this.uploadProgress = percentComplete;
                         parameters.uploadFunction(percentComplete);
                       }
                     }, false);
                     return xhr;
                   },
 
-                success: function(json) {
+                success: (json) =>  {
                     if (!json.video) return parameters.successFunction('error');
 
                     parameters.successFunction(`${watchUrl}${json.video.uuid}`);

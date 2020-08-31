@@ -150,9 +150,25 @@ var share = (function(){
 						essenseData : {
 							storage : storage,
 							value : value,
-							on : {
-								added : function(value){
+							actions : {
+								added : function(link){
+									var type = 'url';
 
+									console.log('Finished!', link, new Date());
+									var result = currentShare[type].set(link)
+
+									if(!essenseData.share){
+										state.save()
+									}
+
+									if(!result && errors[type]){
+
+										sitemessage(errors[type])
+
+									}								
+
+									if (renders[type])
+										renders[type]();
 									
 								}
 							}
@@ -215,7 +231,6 @@ var share = (function(){
 									
 
 									if(!_.isArray(value)) value = [value]
-
 									_.each(value, function(v, i){
 
 										result = currentShare[type].set(v)
@@ -225,7 +240,6 @@ var share = (function(){
 										}
 									})
 
-									console.log('SHaaaaare', currentShare[type]);
 
 									if(!result && errors[type]){
 
