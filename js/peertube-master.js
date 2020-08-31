@@ -2,16 +2,15 @@ PeerTubeHandler = function(app) {
 
     const baseUrl = 'https://pocketnetpeertube.nohost.me/api/v1/';
 
-    this.baseUrl = 'https://pocketnetpeertube.nohost.me/api/v1/';
+    const watchUrl = 'https://pocketnetpeertube.nohost.me/videos/watch/';
 
     const apiHandler = {
 
         upload({method, parameters}) {
-            console.log(this.baseUrl);
-            // $.ajax({
-            //     url: `${baseUrl}${method}`,
-            //     ...parameters,
-            // });
+            $.ajax({
+                url: `${baseUrl}${method}`,
+                ...parameters,
+            });
         },
 
         run({method, parameters}) {
@@ -188,22 +187,13 @@ PeerTubeHandler = function(app) {
                     return xhr;
                   },
 
-                success: parameters.successFunction,
+                success: function(json) {
+                    if (!json.video) return parameters.successFunction('error');
+
+                    parameters.successFunction(`${watchUrl}${json.video.uuid}`);
+                },
             }
         });
-        // apiHandler.run({
-        //     method : 'videos/upload',
-        //     parameters : {
-        //         method : 'POST',
-        //         headers : {
-        //             Authorization : `Bearer ${this.userToken}`,
-        //             // 'Content-Type' : 'multipart/form-data',
-        //         },
-        //         body : formData,
-        //     }
-        // })
-        //   .then(res => res.json())
-        //   .then(data => console.log('DDDDDDDDD', data));
     };
 
 

@@ -34,12 +34,15 @@ var uploadpeertube = (function(){
 		var initEvents = function(){
 			el.videoInput.change(function(evt) {
 				var fileName = evt.target.files[0].name;
-				el.videoError.text(fileName.slice(0, 15) + '...');
+				el.videoError.text(fileName.slice(0, 20) + (fileName.length > 20 ? '...' : ''));
+				el.videoError.removeClass('error-message');
 			});
 
 			el.videoWallpaper.change(function(evt) {
 				var fileName = evt.target.files[0].name;
-				el.videoError.text(fileName.slice(0, 15) + '...');
+
+				el.wallpaperError.text(fileName.slice(0, 20) + (fileName.length > 20 ? '...' : ''));
+				el.wallpaperError.removeClass('error-message');
 			});
 
 		}
@@ -84,29 +87,31 @@ var uploadpeertube = (function(){
 						html : '<i class="fas fa-upload"></i> Upload',
 						fn : function(wnd, wndObj){
 							var videoInputFile = el.videoInput.prop('files');
-							var videoError = wnd.find('.file-type-error');
+							// var videoError = wnd.find('.file-type-error');
 
 							var videoWallpaperFile = el.videoWallpaper.prop('files');
-							var wallpaperError = wnd.find('.wallpaper-type-error');
+							// var wallpaperError = wnd.find('.wallpaper-type-error');
 
 							var videoName = wnd.find('.upload-video-name').val();
 							var nameError = wnd.find('.name-type-error');
 
-							videoError.text('');
-							wallpaperError.text('');
+							el.videoError.text('');
+							el.wallpaperError.text('');
 							nameError.text('');
 
 							var filesWrittenObject = {};
 
 							// validation
 							if (!videoInputFile[0]) {
-								videoError.text('No video selected');
-								
+								el.videoError.text('No video selected');
+								el.videoError.addClass('error-message');
+
 								return;
 							}
 							if (!videoInputFile[0].type.includes('video')) {
-								videoError.text('Incorrect video format');
-								
+								el.videoError.text('Incorrect video format');
+								el.videoError.addClass('error-message');
+
 								return;
 							};
 
@@ -115,8 +120,9 @@ var uploadpeertube = (function(){
 							if (videoWallpaperFile[0]) {
 								console.log(videoWallpaperFile);
 								if (videoWallpaperFile[0].type !== 'image/jpeg' || videoWallpaperFile[0].type !== 'image/jpg') {
-									wallpaperError.text('Incorrect wallpaper format. Supported: .jpg, .jpeg');
-	
+									el.wallpaperError.text('Incorrect wallpaper format. Supported: .jpg, .jpeg');
+									el.wallpaperError.addClass('error-message');
+
 									return;
 								};
 
