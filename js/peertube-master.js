@@ -1,10 +1,21 @@
 PeerTubeHandler = function(app) {
 
+    const baseUrl = 'https://pocketnetpeertube.nohost.me/api/v1/';
+
+    this.baseUrl = 'https://pocketnetpeertube.nohost.me/api/v1/';
+
     const apiHandler = {
-        baseUrl: 'https://pocketnetpeertube.nohost.me/api/v1/',
+
+        upload({method, parameters}) {
+            console.log(this.baseUrl);
+            // $.ajax({
+            //     url: `${baseUrl}${method}`,
+            //     ...parameters,
+            // });
+        },
 
         run({method, parameters}) {
-            return fetch(`${this.baseUrl}${method}`, parameters).catch(err => {
+            return fetch(`${baseUrl}${method}`, parameters).catch(err => {
                 console.log(err);
 
                 return err;
@@ -133,14 +144,8 @@ PeerTubeHandler = function(app) {
     };
 
     this.uploadVideo = async (parameters) => {
-        console.log(parameters);
 
         const channelInfo = await this.getChannel();
-
-        // console.log('BLOOOOOOOB', new Blob({
-        //     updateAt : new Date(),
-        //     privacy : 1,
-        // }));
 
         const bodyOfQuery = {
             privacy : 1,
@@ -159,19 +164,46 @@ PeerTubeHandler = function(app) {
 
         Object.keys(bodyOfQuery).map(key => formData.append(key, bodyOfQuery[key]));
 
-        apiHandler.run({
+        apiHandler.upload({
             method : 'videos/upload',
             parameters : {
-                method : 'POST',
-                headers : {
+                type: 'POST',
+                method: 'POST',
+                contentType: false,
+                processData: false,
+                data: formData,
+                headers: {
                     Authorization : `Bearer ${this.userToken}`,
-                    // 'Content-Type' : 'multipart/form-data',
                 },
-                body : formData,
+
+                xhr: function(){
+                    const xhr = $.ajaxSettings.xhr(); // получаем объект XMLHttpRequest
+                    xhr.upload.addEventListener('progress', function(evt){ // добавляем обработчик события progress (onprogress)
+                      if(evt.lengthComputable) { 
+                        const percentComplete = evt.loaded / evt.total * 100;
+
+                        parameters.uploadFunction(percentComplete);
+                      }
+                    }, false);
+                    return xhr;
+                  },
+
+                success: parameters.successFunction,
             }
-        })
-          .then(res => res.json())
-          .then(data => console.log('DDDDDDDDD', data));
+        });
+        // apiHandler.run({
+        //     method : 'videos/upload',
+        //     parameters : {
+        //         method : 'POST',
+        //         headers : {
+        //             Authorization : `Bearer ${this.userToken}`,
+        //             // 'Content-Type' : 'multipart/form-data',
+        //         },
+        //         body : formData,
+        //     }
+        // })
+        //   .then(res => res.json())
+        //   .then(data => console.log('DDDDDDDDD', data));
     };
 
 

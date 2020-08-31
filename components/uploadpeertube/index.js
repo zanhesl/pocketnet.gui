@@ -32,7 +32,15 @@ var uploadpeertube = (function(){
 		}
 
 		var initEvents = function(){
-			
+			el.videoInput.change(function(evt) {
+				var fileName = evt.target.files[0].name;
+				el.videoError.text(fileName.slice(0, 15) + '...');
+			});
+
+			el.videoWallpaper.change(function(evt) {
+				var fileName = evt.target.files[0].name;
+				el.videoError.text(fileName.slice(0, 15) + '...');
+			});
 
 		}
 
@@ -57,6 +65,10 @@ var uploadpeertube = (function(){
 
 				el = {};
 				el.c = p.el.find('#' + self.map.id);
+				el.videoInput = el.c.find('.upload-video-file');
+				el.videoWallpaper = el.c.find('.upload-video-wallpaper');
+				el.videoError = el.c.find('.file-type-error');
+				el.wallpaperError = el.c.find('.wallpaper-type-error');
 
 				initEvents();
 
@@ -71,10 +83,10 @@ var uploadpeertube = (function(){
 						class : "close",
 						html : '<i class="fas fa-upload"></i> Upload',
 						fn : function(wnd, wndObj){
-							var videoInputFile = wnd.find('.upload-video-file').prop('files');
+							var videoInputFile = el.videoInput.prop('files');
 							var videoError = wnd.find('.file-type-error');
 
-							var videoWallpaperFile = wnd.find('.upload-video-wallpaper').prop('files');
+							var videoWallpaperFile = el.videoWallpaper.prop('files');
 							var wallpaperError = wnd.find('.wallpaper-type-error');
 
 							var videoName = wnd.find('.upload-video-name').val();
@@ -118,26 +130,15 @@ var uploadpeertube = (function(){
 
 							filesWrittenObject.name = videoName;
 
+							filesWrittenObject.uploadFunction = function(percentComplete){
+								console.log('Uploaded ', percentComplete, ' %', new Date());
+							}
+
+							filesWrittenObject.successFunction = function(json){
+								console.log('Finished!', json, new Date());
+							}
+
 							self.app.peertubeHandler.uploadVideo(filesWrittenObject);
-							// lazyEach({
-							// 	array : filesArray,
-							// 	action : function(p){
-							// 		var filePeertube = p.item;
-							// 		var fileType = filePeertube.type.split('/')[0];
-							// 		var fileReader = new FileReader();
-							// 		fileReader.onload = function(file) {
-							// 			filesWrittenObject[fileType] = fileReader.result;
-							// 			p.success();
-							// 		};
-							// 		fileReader.readAsBinaryString(filePeertube);
-							// 	},
-		
-							// 	all : {
-							// 		success : function() {
-							// 			self.app.peertubeHandler.uploadVideo(filesWrittenObject);
-							// 		}
-							// 	}
-							// })
 						}
 					}
 
