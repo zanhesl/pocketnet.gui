@@ -9630,7 +9630,7 @@ torImages = function(el, p){
 	    	}
 		}
 		
-		if (url.includes('videos/watch/')) {
+		if (url.includes('peertube')) {
 			type = 'peertube';
 			id = url.split('watch/')[1]
 

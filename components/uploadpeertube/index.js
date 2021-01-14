@@ -119,8 +119,9 @@ var uploadpeertube = (function(){
 							filesWrittenObject.video = videoInputFile[0];
 
 							if (videoWallpaperFile[0]) {
-								console.log(videoWallpaperFile);
-								if (videoWallpaperFile[0].type !== 'image/jpeg' || videoWallpaperFile[0].type !== 'image/jpg') {
+								console.log(videoWallpaperFile[0].type);
+								
+								if (videoWallpaperFile[0].type !== 'image/jpeg' && videoWallpaperFile[0].type !== 'image/jpg') {
 									el.wallpaperError.text('Incorrect wallpaper format. Supported: .jpg, .jpeg');
 									el.wallpaperError.addClass('error-message');
 
