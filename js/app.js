@@ -579,7 +579,6 @@ Application = function(p)
 							}
 
 							self.user.usetorrent = self.platform.sdk.usersettings.meta.useWebtorrentImages ? self.platform.sdk.usersettings.meta.useWebtorrentImages.value : false;
-							self.user.usePeertube = self.platform.sdk.usersettings.meta.enablePeertube ? self.platform.sdk.usersettings.meta.enablePeertube.value : false;
 						} 
 
 
