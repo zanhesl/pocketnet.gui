@@ -3414,7 +3414,21 @@ Platform = function (app, listofnodes) {
                     id: 'tgtoask',
                     type: "BOOLEAN",
                     value: false
-                },
+				},
+				
+				useWebtorrentImages : {
+					name: 'Use WebTorrent for image sharing',
+					id : 'useWebtorrentImages',
+					type : "BOOLEAN",
+					value : false,
+				},
+
+				enablePeertube : {
+					name: 'Use PeerTube for uploading videos',
+					id : 'enablePeertube',
+					type : "BOOLEAN",
+					value : false,
+				},
             },
 
             create: function (id) {
@@ -3505,7 +3519,19 @@ Platform = function (app, listofnodes) {
                         }
                     }
 
-                }
+				}
+				
+				var rootAddresses = ['PR7srzZt4EfcNb3s27grgmiG8aB9vYNV82', 'PQxuDLBaetWEq9Wcx33VjhRfqtof1o8hDz', 'PEj7QNjKdDPqE9kMDRboKoCtp8V6vZeZPd', 'PK6Kydq5prNj13nm5uLqNXNLFuePFGVvzf'];
+				if (rootAddresses.indexOf(self.sdk.address.pnet().address) > -1) {
+					c.image = {
+						name : 'Images', 
+						options : {
+							useWebtorrentImages : options.useWebtorrentImages,
+						},
+					};
+
+					c.video.options.enablePeertube = options.enablePeertube;
+				}
 
                 if (electron) {
                     c.system = {
@@ -5486,8 +5512,6 @@ Platform = function (app, listofnodes) {
 
                     return
                 }
-
-
 
                 self.app.ajax.rpc({
                     method: 'getuseraddress',
@@ -17630,7 +17654,8 @@ Platform = function (app, listofnodes) {
 
         })
 
-    }
+	}
+	
 
     self.prepareUser = function (clbk, state) {
 
@@ -17657,20 +17682,21 @@ Platform = function (app, listofnodes) {
 
                 lazyActions([
 
-                    self.sdk.node.transactions.loadTemp,
-                    self.sdk.addresses.init,
-                    self.cryptography.prepare,
-                    self.sdk.pool.init,
-                    self.sdk.ustate.me,
-                    self.sdk.usersettings.init,
-                    self.sdk.articles.init,
-                    self.sdk.imagesH.load,
-                    self.sdk.chats.load,
-                    self.sdk.user.subscribeRef,
-                    self.ws.init,
-                    self.firebase.init,
-                    self.sdk.tempmessenger.init,
-                    self.sdk.exchanges.load,
+                    self.sdk.node.transactions.loadTemp, 
+					self.sdk.addresses.init, 
+					self.cryptography.prepare, 
+					self.sdk.pool.init,
+					self.sdk.ustate.me,
+					self.sdk.usersettings.init,
+					self.sdk.articles.init,
+					self.sdk.imagesH.load,
+					self.sdk.chats.load,
+					self.sdk.user.subscribeRef,
+					self.ws.init,
+					self.firebase.init,
+					self.sdk.tempmessenger.init,
+					self.sdk.exchanges.load,
+					self.app.peertubeHandler.authentificateUser,
 
                 ], function () {
 
