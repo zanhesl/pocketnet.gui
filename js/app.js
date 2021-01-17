@@ -38,7 +38,18 @@ if(typeof _Electron != 'undefined' && _Electron){
 	emojionearea = require('./js/vendor/emojionearea.js')
 	filterXss = require('./js/vendor/xss.min.js')
 
-	const electronSpellchecker = require('electron-spellchecker');
+
+	const contextMenu = require('electron-context-menu');
+
+	contextMenu({
+		showSearchWithGoogle : false,
+		showCopyImageAddress : true,
+		showSaveImageAs : true
+	})
+
+	
+
+	/*const electronSpellchecker = require('electron-spellchecker');
 
 	// Retrieve required properties
 	const SpellCheckHandler = electronSpellchecker.SpellCheckHandler;
@@ -57,9 +68,9 @@ if(typeof _Electron != 'undefined' && _Electron){
 
 	// Add context menu listener
 	var contextMenuListener = new ContextMenuListener((info) => {
-
 		contextMenuBuilder.showPopupMenu(info);
-	});
+    });*/
+
 
 }
 
@@ -412,7 +423,7 @@ Application = function(p)
 
 	var newObjects = function(p){
 
-		self.localization = new Localization(self);
+		
 		
 		self.settings = new settingsLocalstorage(self);
 		self.nav = new Nav(self);	
@@ -546,99 +557,108 @@ Application = function(p)
 
 		prepareMap();
 
-		newObjects(p);
+		self.localization = new Localization(self);
 
-		self.realtime();
+		self.localization.init(function(){
 
-		if(!_Node)
-		{
-			checkJSErrors();
-		}
+			newObjects(p);
 
-		var fprintClbk = function(){
+			self.realtime();
 
-			self.localization.init(function(){
+			if(!_Node)
+			{
+				checkJSErrors();
+			}
 
-				self.user.isState(function(state){
+			var fprintClbk = function(){
 
-					self.platform.prepare(function(){
+				
+
+					console.log("IMHERE")
+
+					self.user.isState(function(state){
+
+						self.platform.prepare(function(){
 
 
-						if(state && self.platform.sdk.address.pnet()){
+							if(state && self.platform.sdk.address.pnet()){
 
-							var addr = self.platform.sdk.address.pnet().address
+								var addr = self.platform.sdk.address.pnet().address
 
-							var regs = self.platform.sdk.registrations.storage[addr];
+								var regs = self.platform.sdk.registrations.storage[addr];
 
-							console.log("regsregsregs", regs)
+								if (regs && regs >= 5){
+									
+									self.platform.ui.showmykey()
+									
+								}
 
-							if (regs && regs >= 5){
 								
-								self.platform.ui.showmykey()
-								
+
 							}
 
 							self.user.usetorrent = self.platform.sdk.usersettings.meta.useWebtorrentImages ? self.platform.sdk.usersettings.meta.useWebtorrentImages.value : false;
 							self.user.usePeertube = self.platform.sdk.usersettings.meta.enablePeertube ? self.platform.sdk.usersettings.meta.enablePeertube.value : false;
 						} 
 
+							self.platform.m.log('enter', state)
+							
+							self.nav.init(p.nav);
 
-						self.platform.m.log('enter', state)
+							if (p.clbk) 
+								p.clbk();
+
+						}, state)
 						
-						self.nav.init(p.nav);
+					})
 
-						if (p.clbk) 
-							p.clbk();
-
-					}, state)
 					
-				})
 
-				
+		
 
-			})
+			}
 
-		}
+			if(typeof Fingerprint2 != 'undefined'){
 
-		if(typeof Fingerprint2 != 'undefined'){
+				new Fingerprint2.get({
 
-			new Fingerprint2.get({
+					excludes: {
+						userAgent: true, 
+						language: true,
+						enumerateDevices : true,
+						screenResolution : true,
+						pixelRatio : true,
+						fontsFlash : true,
+						doNotTrack : true,
+						timezoneOffset : true,
+						timezone : true,
+						webdriver : true,
+						hardwareConcurrency : true,
+						hasLiedLanguages : true,
+						hasLiedResolution : true,
+						hasLiedOs : true,
+						hasLiedBrowser : true
+					}
 
-				excludes: {
-					userAgent: true, 
-					language: true,
-					enumerateDevices : true,
-					screenResolution : true,
-					pixelRatio : true,
-					fontsFlash : true,
-					doNotTrack : true,
-					timezoneOffset : true,
-					timezone : true,
-					webdriver : true,
-					hardwareConcurrency : true,
-					hasLiedLanguages : true,
-					hasLiedResolution : true,
-					hasLiedOs : true,
-					hasLiedBrowser : true
-				}
+				},function(components, r){
 
-			},function(components, r){
+					var values = components.map(function (component) { return component.value })
+					var murmur = Fingerprint2.x64hash128(values.join(''), 31)
 
-				var values = components.map(function (component) { return component.value })
-    			var murmur = Fingerprint2.x64hash128(values.join(''), 31)
+					self.options.fingerPrint = hexEncode('fakefingerprint');
+					
+					fprintClbk()
+				});
+			}
 
-				self.options.fingerPrint = hexEncode('fakefingerprint');
-				
+			else
+			{
+				self.options.fingerPrint = hexEncode('fingerPrint')
+
 				fprintClbk()
-			});
-		}
+			}
 
-		else
-		{
-			self.options.fingerPrint = hexEncode('fingerPrint')
-
-			fprintClbk()
-		}
+		})
 
 		
 		

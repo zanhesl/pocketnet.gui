@@ -8,7 +8,7 @@ var applications = (function(){
 
 		var primary = deep(p, 'history');
 
-		var el;
+		var el, ed;
 
 		var actions = {
 
@@ -46,20 +46,20 @@ var applications = (function(){
 				}
 			},
 
-			os : function(){
+			os : function(clbk){
 				var _os = os();
 
 				self.app.platform.m.log('registration_application')
 
-				if (_os && self.app.platform.applications[_os] && typeof _Electron == 'undefined' && !window.cordova){
+				if (_os && self.app.platform.applications[ed.key][_os] && (typeof _Electron == 'undefined' && ed.key != 'ui') && !window.cordova){
 
-					renders.os(self.app.platform.applications[_os])
+					renders.os(self.app.platform.applications[ed.key][_os], clbk)
 
 				}
 
 				else
 				{
-					clbk();
+					clbk(clbk);
 				}
 			}
 
@@ -84,8 +84,8 @@ var applications = (function(){
 					_p.el.find('.downloadOs').on('click', function(){
 						actions.download(os, function(link){
 							el.c.find('.os').addClass('rundownloading')
-							el.c.find('.skipositem').html('<div class="downloadstart">You will now continue your registration after you install Pocketnet Desktop.</div>'+
-								'<div><a href="'+link+'"><b>If Pocketnet for Windows did not start downloading, please click here to install it</b></a></div>')
+							el.c.find('.skipositem').html('<div class="downloadstart">'+self.app.localization.e('e13011')+'</div>'+
+								'<div><a href="'+link+'"><b>'+self.app.localization.e('e13012')+'</b></a></div>')
 					
 						})
 					})
@@ -114,7 +114,11 @@ var applications = (function(){
 		return {
 			primary : primary,
 
-			getdata : function(clbk){
+			getdata : function(clbk, p){
+
+				ed = deep(p, 'settings.essenseData') || {}
+
+				ed.key ||(ed.key = 'ui')
 
 				var data = {};
 

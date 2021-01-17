@@ -149,6 +149,8 @@ nModule = function(){
 					{
 						var options = p[insert.storageKey] || {};
 
+					
+
 							options.content = html;
 							options.el = p.el;
 							options.app = self.app

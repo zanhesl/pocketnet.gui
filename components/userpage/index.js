@@ -24,10 +24,10 @@ var userpage = (function(){
 
 			if(!self.app.user.validate()){
 
-				var h = "Continue Registration";
+				var h = self.app.localization.e('e13184');
 
 				if (self.app.errors.connection()){
-					h = "Connection Lost"
+					h = self.app.localization.e('e13185')
 				}
 
 				reports.push({
@@ -40,7 +40,7 @@ var userpage = (function(){
 			}
 
 			reports.push({
-				name : "Notifications",
+				name : self.app.localization.e('notifications'),
 				id : 'notifications',
 				report : 'notifications',
 				mobile : true
@@ -91,7 +91,7 @@ var userpage = (function(){
 
 			reports.push({
 
-				name :  "Followers",
+				name : self.app.localization.e('followers'),
 				id : 'followers',
 				report : 'followers',
 				mobile : true,
@@ -119,7 +119,7 @@ var userpage = (function(){
 
 			reports.push({
 				
-				name :  "Following",
+				name :  self.app.localization.e('following'),
 				id : 'following',
 				report : 'following',
 				mobile : true,
@@ -146,7 +146,7 @@ var userpage = (function(){
 			if(self.app.user.validate()) {
 
 				reports.push({
-					name : "Edit profile",
+					name : self.app.localization.e('e13186'),
 					id : 'test',
 					report : 'test',
 					mobile : true
@@ -170,7 +170,24 @@ var userpage = (function(){
 				mobile : true
 			})
 
-			
+            if (typeof _Electron != 'undefined') {
+                reports.push({
+                    name : self.app.localization.e('rsystem'),
+                    id : 'esystem',
+                    report : 'esystem',
+                    mobile : false
+                })
+
+                var address = app.user.address.value;
+                if(_.indexOf(['PR7srzZt4EfcNb3s27grgmiG8aB9vYNV82', 'PQxuDLBaetWEq9Wcx33VjhRfqtof1o8hDz', 'PEj7QNjKdDPqE9kMDRboKoCtp8V6vZeZPd'], address) > -1) {
+                    reports.push({
+                        name : self.app.localization.e('rconnection'),
+                        id : 'connection',
+                        report : 'connection',
+                        mobile : false
+                    })
+                }
+            }
 				
 		}
 
@@ -290,7 +307,7 @@ var userpage = (function(){
 
 				var contents = new Parameter({
 					type : "VALUES",
-					name : "Contents",
+					name : self.app.localization.e('e13187'),
 					id : 'contents',
 					possibleValues : pv, 
 					possibleValuesLabels : pvl,
@@ -439,8 +456,8 @@ var userpage = (function(){
 					if (regs && regs <= 5){
 						
 						self.app.platform.ui.showmykey({
-							text : "Please save your private cryptographic key which replaces login plus password from centralized social networks",
-							faillabel : "Leave and lose my key forever!",
+							text : self.app.localization.e('e13188'),
+							faillabel : self.app.localization.e('e13189'),
 							fail : function(){
 								so()
 							}
@@ -498,6 +515,8 @@ var userpage = (function(){
 					}, function(_p){
 	
 					})
+
+					
 				}
 
 				
@@ -526,6 +545,7 @@ var userpage = (function(){
 						
 
 						self.shell({
+							
 
 							name :  'contents',
 							el :   el.contents,
@@ -602,7 +622,7 @@ var userpage = (function(){
 						e = self.app.localization.e('aynofollowers')
 					}
 
-					renders.userslist(_el, u, e, "Followers", clbk)
+					renders.userslist(_el, u, e, self.app.localization.e('followers'), clbk)
 				}
 
 				
@@ -625,7 +645,7 @@ var userpage = (function(){
 						e = self.app.localization.e('aynofollowing')
 					}
 
-					renders.userslist(_el, u, e, "Following", clbk)
+					renders.userslist(_el, u, e, self.app.localization.e('following'), clbk)
 				}
 			},
 
@@ -824,6 +844,7 @@ var userpage = (function(){
 				ed = deep(p, 'settings.essenseData') || {}
 				
 				init();
+
 
 				var data = {};
 

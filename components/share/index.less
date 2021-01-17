@@ -810,6 +810,22 @@
     }   
 
 	.postpanel{
+
+		.language{
+			padding-top : 8px;
+			img{
+				vertical-align: top;
+				opacity: 0.8;
+			}
+		}
+
+		.times{
+			opacity: 0.3;
+
+			&:hover{
+				opacity: 1;
+			}
+		}
 		
 		>div{
 			width: 40%;
@@ -862,6 +878,11 @@
 
 	.panel{
 		height: 35px;
+
+		.hide{
+			display: none;
+		}
+
 
 		>div{
 			width : 32px;
@@ -1347,11 +1368,13 @@ html.stblack{
 		.txt{
 			textarea{
 				background: @bg;
+				color : @color-gray-slight;
 			}
 			
 	
 			.emojionearea-editor{
 				background: @bg;
+				color : @color-gray-slight;
 			}
 		}
 		

@@ -8,6 +8,8 @@ var share = (function(){
 
 		var wordsRegExp = /[,.!?;:() \n\r]/g
 
+		var displayTimes = false
+
 		var primary = deep(p, 'history');
 
 		var el, currentShare = null, essenseData;
@@ -16,9 +18,63 @@ var share = (function(){
 
 		var intro = false;
 
-		var m = 'Hello Pocketeers!'
+		var m = self.app.localization.e('e13160')
 
 		var actions = {
+
+			language : function(_clbk){
+				var items = []
+
+				_.each(self.app.localization.available, function(a){
+					items.push({
+						text : a.name,
+						action : function (clbk) {
+
+							var na = app.localization.findByName(a.name);
+
+
+							if (na && na.key != currentShare.language.v)
+							{
+								currentShare.language.set(na.key)
+							}
+
+							clbk()
+
+							renders.postline();
+
+							if(_clbk) _clbk()
+
+						}
+					})
+				})
+
+				menuDialog({
+
+                    items: items
+				})
+			},
+
+			toggleTimesDisplay : function(){
+
+				var checkEntity = currentShare.message.v || currentShare.caption.v || currentShare.repost.v || currentShare.url.v || currentShare.images.v.length || currentShare.tags.v.length;
+
+				if (el.times){
+
+					if (checkEntity){
+
+						el.times.removeClass('hide');
+						
+					}
+	
+					if (!checkEntity){
+	
+						el.times.addClass('hide');
+	
+					}
+				}
+
+			},
+
 			tooltips : function(){
 				if(!actions.tooltip){
 
@@ -39,7 +95,7 @@ var share = (function(){
 
 					pliss = self.app.platform.api.plissing({
 						el : el.tagSearch,
-						text : "Add Tags For Your Post"
+						text : self.app.localization.e('e13161')
 					})
 
 					return true
@@ -135,7 +191,6 @@ var share = (function(){
 				})
 			},
 			embeding : function(type, value){
-
 				var storage = currentShare.export(true)
 
 				if (type === 'addVideo') {
@@ -204,8 +259,37 @@ var share = (function(){
 							external = p
 						}
 					})
-				}else
-				{
+
+					return
+				}
+
+				if(type == 'times'){
+
+					dialog({
+						html : self.app.localization.e('e14002'),
+						btn1text : self.app.localization.e('dyes'),
+						btn2text : self.app.localization.e('dno'),
+
+						success : function(){
+
+							currentShare.clear();
+							currentShare.language.set(self.app.localization.key)
+							make();
+							
+						},
+
+						fail : function(){
+						}
+					})
+
+					
+
+					return
+
+				}
+				
+				
+				if(type == 'url' || type == 'images'){
 					focusfixed = true;
 
 					self.nav.api.load({
@@ -256,7 +340,6 @@ var share = (function(){
 						clbk : function(s, p){
 							external = p
 
-							console.log('external', external)
 						}
 					})
 				}
@@ -269,7 +352,7 @@ var share = (function(){
 
 				if(!currentShare.tags.set(tag)){
 
-					el.error.html("You can enter less that 30 tags")
+					el.error.html(self.app.localization.e('e13162'))
 
 					/*dialog({
 						html : ,
@@ -438,6 +521,9 @@ var share = (function(){
 			},
 
 			linksFromText : function(text){
+
+				console.log(text, 'text');
+
 				if(!currentShare.url.v){
 					var r = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%|_\+.~#/?&//=]*)?/gi; 
 					
@@ -460,7 +546,7 @@ var share = (function(){
 							else
 							{
 								if(currentShare.url.v) return;
-
+								console.log('preparedUrl', url);
 								currentShare.url.set(url)
 
 								renders['url']()
@@ -508,44 +594,23 @@ var share = (function(){
 
 			post : function(clbk, p){
 
-				
+				console.log('into post', currentShare)
+
+
 				el.postWrapper.removeClass('showError');
 
 				if(essenseData.hash == currentShare.shash()){
 
 					el.postWrapper.addClass('showError');
-					el.error.html("There aren't changes in Post")
+					el.error.html(self.app.localization.e('e13163'))
 					return
 				}
 
 				el.c.addClass('loading')
 				// topPreloader(50)
 
-				var torrentProgress = el.c.find('.torrent-progress-bar');
-				var loaderElement = el.c.find('.sLoader-content');
-
-				var inputField = el.c.find('.emojionearea-editor');
-
-				if (self.app.user.usetorrent) {
-					loaderElement.find('.prwrapper').addClass('hidden');
-					inputField.addClass('hidden');
-					var torrentProgress = el.c.find('.torrent-progress-bar');
-					var barPercentage = torrentProgress.find('.torrent-progress-bar-percentage');
-					var imgElement = torrentProgress.find('.torrent-progress-bar-image');
-
-					torrentProgress.removeClass('hidden');
-
-					setInterval(function() {
-						var currentProgress = self.app.torrentHandler.torrentWithInfo.length ? _.reduce(self.app.torrentHandler.torrentWithInfo, function(accumulator, currentValue) {
-							accumulator += currentValue.ratio
-							return accumulator;
-						}, 0) * 100 / (self.app.torrentHandler.torrentWithInfo.length) : 0;
-
-
-						barPercentage.text('Uploading images to WebTorrent: ' + currentProgress.toFixed(0) + '%');
-						imgElement.css('opacity', ((currentProgress + 10 )/ 100).toFixed(2));
-					}, 500);
-				};
+		
+				//currentShare.language.set(self.app.localization.key)
 
 				currentShare.uploadImages(self.app, function(){
 
@@ -662,6 +727,8 @@ var share = (function(){
 			error : function(onlyremove){
 				var error = currentShare.validation();
 
+				actions.toggleTimesDisplay();
+
 				if (error && !onlyremove){
 
 					if (el.postWrapper)
@@ -693,7 +760,7 @@ var share = (function(){
 			},
 
 			eTextChange : function(c){
-
+				console.log('c text', c)
 				var text = c.getText();
 
 				actions.tagsFromText(text);
@@ -716,8 +783,8 @@ var share = (function(){
 			message : self.app.localization.e('emptymessage'),
 			tags : self.app.localization.e('emptytags'),
 			images : self.app.localization.e('maximages'),
-            url : "Please add a few words to tell Pocketpeople about your link. What is it about? Why is it important? What is your opinion?",
-            error_video : 'Your link to video is invalid. Please load valid video URL.'
+            url : self.app.localization.e('e13164'),
+            error_video : self.app.localization.e('e13165')
 		}
 
 		var events = {
@@ -924,6 +991,13 @@ var share = (function(){
 			embeding : function(){
 				var type = $(this).attr('embeding')
 
+				if (type == 'language'){
+
+					actions.language()
+
+					return
+				}
+
 				if (type == 'embeding20'){
 					actions.embeding20()
 				}
@@ -1033,7 +1107,8 @@ var share = (function(){
 					el : el.postline,
 					data : {
 						share : currentShare,
-						essenseData : essenseData
+						essenseData : essenseData,
+						lkey : self.app.localization.key
 					},
 
 				}, function(p){
@@ -1043,6 +1118,7 @@ var share = (function(){
 					el.changePostTime = el.c.find('.postTime')
 					el.selectTime = el.c.find('.selectedTimeWrapper')
 					el.post = el.c.find('.post')
+					el.times = el.c.find('.panel .times')
 
 					el.changePostTime.on('change', events.changePostTime)
 					el.selectTime.on('click', events.selectTime)
@@ -1062,6 +1138,9 @@ var share = (function(){
 							essenseData.close()
 						}
 					})
+
+
+					actions.toggleTimesDisplay();
 
 					if (clbk)
 						clbk();
@@ -1099,9 +1178,7 @@ var share = (function(){
 									events.addTag(value)
 								},*/
 								fastsearch : function(value, clbk, e){
-			
-									console.log('fastsearch', value, e)
-			
+						
 									if(e){
 										var char = String.fromCharCode(e.keyCode || e.which);
 			
@@ -1278,6 +1355,7 @@ var share = (function(){
 				renders.repost();
 
 				renders.postline();
+
 			},
 
 			caption : function(){
@@ -1319,10 +1397,9 @@ var share = (function(){
 
 					if(currentShare.url.v && !og){
 
-						if (meta.type == 'youtube' || meta.type == 'vimeo' || meta.type == 'bitchute') {
-							console.log("INITPLAYER")
-                            Plyr.setup('.js-player', function(player) {
+						if (meta.type == 'youtube' || meta.type == 'vimeo' || meta.type == 'bitchute'  || meta.type == 'peertube') {
 
+							Plyr.setup('.js-player', function(player) {
 								player.muted = false
 							});
 						}
@@ -1605,9 +1682,7 @@ var share = (function(){
 
 		var initEvents = function(){
 
-			
-
-			
+					
 
 			el.changeAddress.on('change', events.changeAddress)			
 
@@ -1674,6 +1749,8 @@ var share = (function(){
 		    			}
 			
 						el.c.find('.emojionearea-editor').pastableContenteditable();
+
+						console.log('pastable');
 
 						el.c.find('.emojionearea-editor').on('pasteImage', function (ev, data){
 
@@ -1801,6 +1878,9 @@ var share = (function(){
 			})
 
 			$('html').on('click', events.unfocus);
+
+			actions.toggleTimesDisplay();
+
 			
 		}
 
@@ -1816,6 +1896,7 @@ var share = (function(){
 				state.load();
 				
 				make();
+
 			},
 
 			auto : function(){
@@ -1832,8 +1913,8 @@ var share = (function(){
 				intro = false;
 				external = null
 
-				currentShare = deep(p, 'settings.essenseData.share') || new Share();
-				
+				currentShare = deep(p, 'settings.essenseData.share') || new Share(self.app.localization.key);
+
 				essenseData = deep(p, 'settings.essenseData') || {};
 
 				self.app.platform.sdk.user.get(function(u){
@@ -1852,20 +1933,22 @@ var share = (function(){
 					if (parameters().repost) 
 						currentShare.repost.set(parameters().repost)
 
-					console.log('currentShare', currentShare)
-					
 
 					var data = {
 						essenseData : essenseData,
 						share : currentShare,
-						postcnt : u.postcnt
+						postcnt : u.postcnt,
+						
 					};
 					
 					
 
 					clbk(data);
 
+
+
 				})
+
 
 			},
 
@@ -1918,6 +2001,10 @@ var share = (function(){
 				el.repostWrapper = el.c.find('.repostWrapper')
 				el.postline = el.c.find('.postlineWrapper')
 
+
+				
+
+
 				initEvents();
 
 				make();
@@ -1927,7 +2014,6 @@ var share = (function(){
 				p.clbk(null, p);
 
 				actions.waitActions();
-
 
 			},
 

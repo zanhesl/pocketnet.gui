@@ -1,4 +1,4 @@
-/* PDF */
+1/* PDF */
 
 	var tableAlignmentCenter = function(obj){
 
@@ -2719,7 +2719,6 @@ torImages = function(el, p){
 	ParametersLive = function(parameters, el, p){
 
 
-
 		if(!p) p = {};
 
 		_.each(parameters, function(parameter){
@@ -2840,7 +2839,7 @@ torImages = function(el, p){
 					return
 				}
 
-				if (parameter.type == 'image'){
+				if (parameter.type == 'image' || parameter.type == 'file'){
 
 
 					var uploadElement = _el.find('.addImage'),
@@ -3218,7 +3217,7 @@ torImages = function(el, p){
 				}
 
 				if (parameter.type == 'valuescustom' || parameter.type == 'values' || parameter.type == 'valuesmultibig'){
-
+										
 					var bkp = null;
 
 					var input = _el.find('.vc_inputWrapper input');
@@ -3307,6 +3306,7 @@ torImages = function(el, p){
 							open()
 						})
 					}
+
 
 					_el.find('.vc_value').on('click', function(){
 						bkp = null;
@@ -3924,7 +3924,9 @@ torImages = function(el, p){
 
 			self.operatorSelect = p.operatorSelect || null;
 			self.operator = p.operator || null;
-			self.if = p.if || null;
+            self.if = p.if || null;
+            
+            self.text = p.text || null;
 
 		if(self.type.indexOf('range') > -1) self.dbFunc = 'fromto'
 
@@ -3955,6 +3957,11 @@ torImages = function(el, p){
 			if(self.type == 'number' || self.type == 'cash')
 			{
 				value = Number(value).toFixed(deep(self, 'format.Precision') || 0)
+            }
+            
+            if(self.type == 'label')
+			{
+				return true;
 			}
 
 			if(self.type == 'hours')
@@ -4091,7 +4098,10 @@ torImages = function(el, p){
 				daterange : ['', ''],
 				email : '',
 				stringany : '',
-				nickname : ''
+				nickname : '',
+				image : '',
+				password : '',
+				file : ''
 			}
 
 			if(typeof self.defaultValue != 'undefined') return self.defaultValue;	
@@ -4140,6 +4150,8 @@ torImages = function(el, p){
 		}
 		self.mask = function(tohtml){
 
+			var f = self.format || {}
+
 			var masked = false;
 
 			var mask = {
@@ -4153,7 +4165,7 @@ torImages = function(el, p){
 			if(self.type == 'number' || self.type == 'cash')
 			{
 				mask.alias = 'numeric';
-				mask.groupSeparator = ',';
+				mask.groupSeparator = typeof f.groupSeparator != 'undefined' ? f.groupSeparator : ',';
 				mask.radixPoint =  '.';
 				mask.digits = deep(self, 'format.Precision');
 				mask.digitsOptional = !1;
@@ -4297,7 +4309,7 @@ torImages = function(el, p){
 
 			var m = self.mask(true);
 
-			if (self.type == 'image') {
+			if (self.type == 'image' || self.type == 'file') {
 
 				if(self.uploadTemplate && self.upload && self.previewTemplate){
 
@@ -4792,9 +4804,7 @@ torImages = function(el, p){
 					input += '</div>'
 
 				return input;
-			}
-
-			
+			}			
 
 			if(self.type == 'color'){
 				var input = '<input notmasked="notmasked" pid="'+self.id+'" class="simpleColor input" value="' + self.value + '">';
@@ -4853,7 +4863,29 @@ torImages = function(el, p){
 				return input
 			}
 
-			var input = '<input '+__disabled+' ' + m + ' pid="'+self.id+'" class="' + self.type + ' input" placeholder="'+(self.placeholder || "")+'" value="' + self.render(true) + '" type="text">';
+			if(self.type == 'password'){
+				var input = '<input '+__disabled+' pid="'+self.id+'" class="' + self.type + ' input" placeholder="'+(self.placeholder || "")+'" value="' + self.render(true) + '" type="password">';
+
+				return input; 
+
+            }
+            
+            if(self.type == 'label'){
+				return `<div ${__disabled} ${m} pid="${self.id}" class="simpleColor inpLabel">${self.value}</div>`
+            }
+
+            if(self.type == 'file_select'){
+                return `
+                    <input ${__disabled} ${m} pid="${self.id}" class="${self.type} input" placeholder="${(self.placeholder || "")}" value="${self.render(true)}" type="text">
+                    <button ${__disabled} ${m} pid="${self.id}_Selector" class="simpleColor inpButton btn_select">...</button>
+                `;
+            }
+            
+            if(self.type == 'button'){
+				return `<button ${__disabled} ${m} pid="${self.id}" class="simpleColor inpButton" value="${self.value}">${self.text}</button>`
+			}
+
+			var input = `<input ${__disabled} ${m} pid="${self.id}" class="${self.type} input" placeholder="${(self.placeholder || "")}" value="${self.render(true)}" type="text">`
 
 			return input; 
 		}
@@ -5030,9 +5062,9 @@ torImages = function(el, p){
 
 			return self.value;
 
-		}
+        }
 
-		if(self.type == 'valuesmultitree'){
+            if(self.type == 'valuesmultitree'){
 
 			self.clear = function(){
 				_.each(self.treemap, function(m){
@@ -5268,13 +5300,13 @@ torImages = function(el, p){
 
 		self.collectValues = function(){
 			var value = {};
-
+			
 			_.each(self.content, function(p, index){
 				if(p.value){
 					value[index] = p.value;
 				}
 			})
-
+			
 			self.set(value)
 		}
 
@@ -5834,8 +5866,6 @@ torImages = function(el, p){
 							if (window.galleryRefresh){
 
 								window.galleryRefresh.refresh(myFileUrl, function (msg) {
-
-									console.log('scanmedia success')
 									
 								}, function (err) {
 
@@ -7584,7 +7614,8 @@ torImages = function(el, p){
 				else{
 
 					if (p.fail)
-				 		p.fail(null, 'nodedirect')	
+						p.fail(null, 'nodedirect')	
+						 
 				}       	
 				
 
@@ -9601,13 +9632,11 @@ torImages = function(el, p){
 	}
 
 	parseVideo = function(url) {
-
 		var _url = url;
 
-	    var test = _url.match(/(http:\/\/|https:\/\/|)(player.|www.)?(vimeo\.com|youtu(be\.com|\.be|be\.googleapis\.com)|bitchute\.com)\/(video\/|embed\/|watch\?v=|v\/)?([A-Za-z0-9._%-]*)(\&\S+)?/);
+	    var test = _url.match(/(http:\/\/|https:\/\/|)(player.|www.)?(peer\.tube|vimeo\.com|youtu(be\.com|\.be|be\.googleapis\.com)|bitchute\.com)\/((videos?\/|embed\/|watch\/?)*(\?v=|v\/)?)*([A-Za-z0-9._%-]*)(\&\S+)?/);
 	    var type = null;
 		var id = null;
-		
 		
 
 	    if(test && url.indexOf('channel') == -1 && url.indexOf("user") == -1){
@@ -9624,19 +9653,16 @@ torImages = function(el, p){
                     
 			    }  else if (test[3].indexOf('bitchute') > -1) {
                     type = 'bitchute';
-			        id = test[6];
+					id = test[6];
+					
+			    }else if (test[3].indexOf('peer.tube') > -1) {
+                    type = 'peertube'
+			        id = test[8];
 			    }
 
 	    	}
-		}
+	    }
 		
-		if (url.includes('peertube')) {
-			type = 'peertube';
-			id = url.split('watch/')[1]
-
-			console.log(url, type, id);
-		}
-
 	    return {
 	        type: type,
 	        url : url,

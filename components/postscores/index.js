@@ -26,7 +26,7 @@ var postscores = (function(){
 
 					return
 				}
-			
+
 				self.sdk.node.transactions.create.commonFromUnspent(
 
 					upvoteShare,
@@ -129,7 +129,7 @@ var postscores = (function(){
 			userlist : function(clbk){
 
 				scores = _.filter(scores, function(s){
-					return s.value >= 3
+					return s.value >= 1
 				})
 
 				var addresses = _.map(scores, function(s){
@@ -156,8 +156,8 @@ var postscores = (function(){
 
 					essenseData : {
 						addresses : addresses,
-						empty : 'Nobody rate this post',
-						caption : "User scores",
+						empty : self.app.localization.e('e13151'),
+						caption : self.app.localization.e('e13152'),
 
 						extra : function(address){
 
