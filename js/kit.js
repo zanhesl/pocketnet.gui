@@ -1073,7 +1073,7 @@ Share = function(){
 		}
 
 		if(self.url.v && self.url.v.length){
-
+			console.log('ERRRRRR', self.message.v, self.caption.v, );
 			var l = trim((trim(self.message.v) + trim(self.caption.v)).replace(self.url.v.length, '')).length
 
 			if (l < 30 && !self.images.v.length){
