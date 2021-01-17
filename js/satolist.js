@@ -3319,6 +3319,13 @@ Platform = function(app, listofnodes){
 					type : "BOOLEAN",
 					value : false,
 				},
+
+				enablePeertube : {
+					name: 'Use PeerTube for uploading videos',
+					id : 'enablePeertube',
+					type : "BOOLEAN",
+					value : false,
+				},
 			},
 
 			create : function(id){
@@ -3399,6 +3406,8 @@ Platform = function(app, listofnodes){
 							useWebtorrentImages : options.useWebtorrentImages,
 						},
 					};
+
+					c.video.options.enablePeertube = options.enablePeertube;
 				}
                 
                 if (electron) {
