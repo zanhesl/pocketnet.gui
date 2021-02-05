@@ -494,6 +494,18 @@ __map =  {
 			},
 		},
 
+		userVideos : {
+			uri : "userVideos",
+			href : "userVideos",
+			add : {
+				el : 'content'
+			},
+			redirect : {
+				auth : 'authorization',
+				//validate : 'filluser'
+			},
+		},
+
 		/*rep : {
 			uri : "rep",
 			href : "rep",

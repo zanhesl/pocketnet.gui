@@ -178,6 +178,13 @@ var userpage = (function(){
 				mobile : false
 			})
 
+			reports.push({
+				name : self.app.localization.e('userVideos'),
+				id : 'userVideos',
+				report : 'userVideos',
+				mobile : false
+			})
+
 		//	var address = app.user.address.value;
 				
                 

@@ -933,3 +933,5 @@ ____loclib.e14108 = 'Share answer'
 
 ____loclib.peertubeAddVideo = 'Add video to post'
 ____loclib.peertubeAddStream = 'Add live stream to post'
+
+____loclib.userVideos = 'Manage Videos'
