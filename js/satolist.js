@@ -2155,7 +2155,8 @@ Platform = function (app, listofnodes) {
                         post : function(){
                         },	
                         absolute : true,
-                        repost  : p.repost
+                        repost  : p.repost,
+                        videoLink: p.videoLink,
                     }
                 })
             }, 50)
