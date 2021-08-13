@@ -235,14 +235,6 @@ var Peertube = function (settings) {
           });
 
           return d;
-
-          return data.flat().reduce(
-            (accumulator, currVal) => ({
-              ...accumulator,
-              [currVal.host]: currVal.data,
-            }),
-            {},
-          );
         })
         .catch((e = {}) =>
           Promise.reject({
