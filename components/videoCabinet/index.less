@@ -812,8 +812,75 @@
 }
 
 html.stblack {
-    #usersettings {
-        background: transparent;
+    #videoCabinet {
+        background-color: #112035;
+
+        .vidgetNameWrapper,
+        .vidgetIconWrapper,
+        .metricsContainerHeader,
+        .metricSection,
+        .cabinetName {
+            color: whitesmoke;
+        }
+
+        .videoSearchInput::placeholder,
+        .videoSelect,
+        .selectIcon,
+        .selectBorderCaption {
+            color: @color-bright;
+        }
+
+        .ghostButton {
+            color: @color-bright;
+
+            &:hover {
+                color: whitesmoke;
+            }
+        }
+
+        .videoSelect {
+            border-bottom-color: @color-bright;
+
+            &:hover {
+                color: whitesmoke;
+                border-bottom-color: whitesmoke;
+            }
+        }
+
+        .sortSelectWrapper {
+            &:hover {
+
+                .selectBorderCaption,
+                .selectIcon {
+                    color: whitesmoke;
+                }
+            }
+        }
+
+        .singleVideoSection {
+            color: whitesmoke;
+        }
+
+        .videoPostLink {
+            color: @color-bright;
+
+            &:hover {
+                color: whitesmoke;
+                text-decoration: underline;
+            }
+        }
+
+        .videoStatsWrapper {    
+            .singleStat {
+                color: whitesmoke;
+    
+                &:hover {
+                    text-decoration: underline;
+                    color: whitesmoke;
+                    cursor: pointer;
+                }
+            }
+        }
     }
 }
 
