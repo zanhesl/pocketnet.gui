@@ -40,9 +40,6 @@
     }
 
     .videoNameDate {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
 
         i {
             width: 20px;
@@ -870,10 +867,10 @@ html.stblack {
             }
         }
 
-        .videoStatsWrapper {    
+        .videoStatsWrapper {
             .singleStat {
                 color: whitesmoke;
-    
+
                 &:hover {
                     text-decoration: underline;
                     color: whitesmoke;
@@ -942,6 +939,62 @@ html.stblack {
                 }
             }
 
+        }
+
+        .videoControls {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .uploadVideo {
+            margin-left: 0;
+        }
+
+        .videoControlItem {
+            margin-top: @rhythm * 2;
+            width: 100%;
+
+            font-size: 1.2em;
+        }
+
+        .videoSortWrapper {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .sortSelectWrapper {
+            margin-left: 0;
+            width: 100%;
+
+            margin-top: @rhythm * 2;
+        }
+
+        .videoSelect {
+            width: 100%;
+        }
+
+        .videoContainer {
+            padding: 0 2 * @rhythm;
+        }
+
+        .statsSection {
+            padding: 0 2 * @rhythm @rhythm;
+        }
+
+        .moduleHeader {
+            padding: 0 2 * @rhythm;
+        }
+
+        .postingStatusWrapper {
+            min-width: 10px;
+        }
+
+        .videoStatsWrapper {
+            min-width: 20px;
+        }
+
+        .videoTextContainer {
+            white-space: normal;
         }
     }
 

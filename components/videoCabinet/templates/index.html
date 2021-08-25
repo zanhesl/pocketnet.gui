@@ -23,8 +23,8 @@
     </div>
   </section>
   <section class="videoContainer">
-    <section class="videoControls">
-      <div class="videoSearchWrapper">
+    <section class="videoControls videoControlItem">
+      <div class="videoSearchWrapper videoControlItem">
         <input
           type="text"
           id="videoSearchInput"
@@ -35,7 +35,7 @@
           <i class="fas fa-search"></i>
         </button>
       </div>
-      <div class="videoSortWrapper">
+      <div class="videoSortWrapper videoControlItem">
         <div class="sortTypeSelectWrapper sortSelectWrapper">
           <div class="selectBorderCaption"><%- e('sortBy') %></div>
           <div class="selectIcon">
@@ -61,7 +61,7 @@
         </div>
       </div>
       <button
-        class="uploadVideo videoActiveButton ghostButton"
+        class="uploadVideo videoActiveButton ghostButton videoControlItem"
         rendersElement="addVideo"
       >
         <i class="fas fa-video"></i><%- e('peertubeAddVideo') %>
