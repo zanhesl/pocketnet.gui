@@ -2,6 +2,7 @@
   <header class="moduleHeader">
     <h1 class="cabinetName"><%- e('videoCabinet') %></h1>
   </header>
+  <% if (hasAccess) { %>
   <section class="statsSection">
     <div class="reputation">
       <div class="reputationblock quotaContainer">
@@ -74,4 +75,10 @@
     </section>
     <section class="userVideos"></section>
   </section>
+  <% } else { %>
+    <section class="videoContainer videoErrorContainer">
+      <h2 class="videoErrorHeading"><i class="fas fa-exclamation-circle"></i> <%- e('unableToAuthorize') %></h2>
+      <p class="videoErrorBody"><%- e('unableToAuthorizeBody') %></p>
+    </section>
+  <% } %>
 </div>
