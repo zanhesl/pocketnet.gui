@@ -500,6 +500,17 @@ var post = (function () {
 								
 						},
 
+						sendLogFromPlayer : function(data) {
+							self.app.Logger.error({
+								err: 'LONG_VIDEO_LOADING',
+								payload: {
+									...data,
+								},
+								code: 611,
+								level: 'warning',
+							});
+						},
+
 						useP2P : self.app.platform.sdk.usersettings.meta.videop2p.value,
 						enableHotkeys : !p.pip
 					};

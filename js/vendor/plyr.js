@@ -9224,6 +9224,7 @@ var PlyrEx = async function(target, options, clbk, readyCallback) {
 
         },{
           hlsError : options.hlsError,
+          sendLogFromPlayer : options.sendLogFromPlayer,
           playbackStatusChange : function(status){
             
           },
@@ -9242,6 +9243,8 @@ var PlyrEx = async function(target, options, clbk, readyCallback) {
 
             return
           }
+
+          window.createdEmbed = embed;
   
           var api = embed.api
               api.mute()
