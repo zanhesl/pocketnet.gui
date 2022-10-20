@@ -8134,6 +8134,8 @@ Platform = function (app, listofnodes) {
                                                         var successFullSendFunc = () => {
                                                             var c = kits.c[object.type]
 
+                                                            console.log('object.type', object.type)
+
                                                             var trobj = new c();
 
                                                             trobj.import(object);
@@ -10276,6 +10278,7 @@ Platform = function (app, listofnodes) {
 
                     var address = self.sdk.address.pnet()
 
+
                     return self.app.peertubeHandler.api.proxy.allServers().then((peertubeservers) => {
                         console.log('peertubeservers', _.flatten(peertubeservers))
 
@@ -10302,19 +10305,31 @@ Platform = function (app, listofnodes) {
                         })
 
                         return Promise.all(promises)
+                    }).catch(e => {
+                        console.error('e' , e)
+
+                        return Promise.resolve()
                     })
                 }
 
                 var removeMatrix = function(){
-                    return new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            resolve()
-                        }, 1000)
+
+                    return self.matrixchat.deactivateAccount().catch(e => {
+                        console.error('e', e)
+
+                        return Promise.resolve()
+                    }).then(r => {
+
+                        self.matrixchat.destroy()
+                        self.matrixchat.init()
+
+                        return Promise.resolve()
                     })
+
                 }
 
                 var removeBastyon = function(){
-                        
+
                     return new Promise((resolve, reject) => {
 
                         var obj = new DeleteAccount();
@@ -29052,6 +29067,14 @@ Platform = function (app, listofnodes) {
             ALL_NOTIFICATIONS_COUNT : {},
             NOTIFICATION : {},
             SHOWING : {}
+        },
+
+        deactivateAccount : function(){
+            if(self.matrixchat.core){
+                return self.matrixchat.core.mtrx.deactivateAccount()
+            }
+
+            return Promise.reject('matrixchat.core')
         },
 
         destroy : function(){
